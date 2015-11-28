@@ -1,9 +1,3 @@
-var express = require('express');
-
-var app = express();
-
-app.get('/', function(req, res) {
-    res.send('Hello, world!');
-});
+var app = require('./src/application');
 
 app.listen(4000);

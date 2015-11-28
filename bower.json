@@ -1,0 +1,15 @@
+{
+  "name": "udms",
+  "description": "University Document Management System",
+  "main": "app.js",
+  "authors": [
+    "\"\""
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/doojin/udms",
+  "moduleType": [],
+  "private": true,
+  "dependencies": {
+    "foundation": "*"
+  }
+}
