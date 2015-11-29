@@ -1,0 +1,8 @@
+.login-form {
+    @include box-shadow(1px, 1px, 3px, #aaaaaa);
+    @include border-radius(5px);
+    background-color: $dark-bg;
+    border: solid 1px #cccccc;
+    padding: 1rem 2rem 0 2rem;
+    margin-top: 10px;
+}

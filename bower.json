@@ -11,5 +11,8 @@
   "private": true,
   "dependencies": {
     "foundation": "*"
+  },
+  "devDependencies": {
+    "jasmine-core": "jasmine#~2.3.4"
   }
 }

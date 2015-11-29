@@ -2,9 +2,11 @@ $header-height: 70px;
 $double-header-height: $header-height * 2;
 
 body {
+    overflow-x: hidden;
+
     & > header {
-        background-color: #eeeeee;
-        box-shadow: 1px 1px 3px #aaaaaa;
+        @include box-shadow(1px, 1px, 3px, #aaaaaa);
+        background-color: $dark-bg;
 
         @media #{$large-up} { height: $header-height; }
         height: $double-header-height;

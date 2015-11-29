@@ -1,4 +1,8 @@
 @import "_settings";
+@import "_mixins";
 @import "../bower_components/foundation/scss/foundation";
+
+@import "widget/slidable";
+@import "widget/login_form";
 
 @import "common";
