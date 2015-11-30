@@ -1,12 +1,12 @@
 define(['helper/jquery'], function($) {
 
-    var USER_EXISTS_URL = '/user-exists';
+    var LOG_IN_URL = '/login';
 
     var userService = {};
 
     userService.login = function(userID, password, callback) {
         $.ajax({
-            url: USER_EXISTS_URL,
+            url: LOG_IN_URL,
             type: 'get',
             data: {
                 userID: userID,
