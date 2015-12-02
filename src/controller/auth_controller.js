@@ -6,7 +6,8 @@ module.exports = {
 
     apply: function(app) {
         app.get('/', getAuth);
-        app.get('/login', getLogin)
+        app.get('/login', getLogin);
+        app.get('/log-off', getLogoff);
     }
 
 };
@@ -31,4 +32,9 @@ function getLogin(req, res) {
         }
         res.json({success: userExists});
     });
+}
+
+function getLogoff(req, res) {
+    authService.logoff(req);
+    res.json({success: true});
 }

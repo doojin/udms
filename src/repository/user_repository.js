@@ -9,7 +9,7 @@ userRepository._users = [
 userRepository.exists = function(userID, password) {
     var found = false;
     this._users.forEach(function(user) {
-        if (user.userID === userID && user.password === password) {
+        if (user.userID.toLowerCase() === userID.toLowerCase() && user.password === password) {
             found = true;
         }
     });
@@ -18,7 +18,7 @@ userRepository.exists = function(userID, password) {
 
 userRepository.getByUserID = function(userID, callback) {
     var matches = this._users.filter(function(user) {
-        return user.userID === userID;
+        return user.userID.toLowerCase() === userID.toLowerCase();
     });
 
     var user =  matches.length > 0 ? matches[0] : null;

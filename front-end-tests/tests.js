@@ -31,7 +31,8 @@ define(['helper/jquery', 'boot'], function($) {
     var tests = [
         'tests/helper/form_util_test',
         'tests/widget/login_form_test',
-        'tests/helper/slidable_test'
+        'tests/helper/slidable_test',
+        'tests/widget/log_off_button_test'
     ];
 
     require(tests, function() {

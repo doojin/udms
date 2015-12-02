@@ -1,6 +1,7 @@
 define(['helper/jquery'], function($) {
 
     var LOG_IN_URL = '/login';
+    var LOG_OFF_URL = '/log-off';
 
     var userService = {};
 
@@ -19,6 +20,19 @@ define(['helper/jquery'], function($) {
                 callback(false);
             }
         });
+    };
+
+    userService.logoff = function(callback) {
+        $.ajax({
+            url: LOG_OFF_URL,
+            type: 'get',
+            success: function() {
+                callback(true);
+            },
+            error: function() {
+                callback(false);
+            }
+        })
     };
 
     return userService;

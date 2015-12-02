@@ -6,10 +6,12 @@ require.config({
 
 define([
     'helper/jquery',
-    'widget/login_form'
+    'widget/login_form',
+    'widget/log_off_button'
 ], function(
     $,
-    LoginForm
+    LoginForm,
+    LogOffButton
 ) {
     // Login form
     var loginPopup = $('.login-form');
@@ -19,5 +21,8 @@ define([
     var loginForm = new LoginForm(loginPopup);
     loginForm.bindShowTrigger(loginButton, 'click');
     loginForm.bindSubmitTrigger(submitButton, 'click');
+
+    // Log off button
+    new LogOffButton('.log-off');
 
 });

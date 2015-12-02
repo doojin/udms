@@ -23,6 +23,10 @@ authService.authorize = function(req, user) {
     req.session.auth.role = user.role;
 };
 
+authService.logoff = function(req) {
+    req.session.auth = UNAUTHORIZED;
+};
+
 // Used as middleware on each request
 authService._populateUserData = function(req, res, next) {
     req.session.auth = req.session.auth === undefined ? UNAUTHORIZED : req.session.auth;

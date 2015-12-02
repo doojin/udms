@@ -16,6 +16,14 @@ describe('userRepository', function() {
         expect(repository.exists('dummyID', 'dummyPassword')).toBeTruthy();
     });
 
+    it('exists should be case insensitive', function() {
+        repository._users = [
+            {userID: 'duMMyID', password: 'dummyPassword'}
+        ];
+
+        expect(repository.exists('DummyiD', 'dummyPassword')).toBeTruthy();
+    });
+
     it('exists should return false if user not exists', function() {
         repository._users = [
             {userID: 'dummyID', password: 'dummyPassword'}
@@ -44,6 +52,16 @@ describe('userRepository', function() {
         repository.getByUserID('dummyID3', callback);
 
         expect(callback).toHaveBeenCalledWith(null);
+    });
+
+    it('getByUserID should be case insensitive', function() {
+        var user = {userID: 'duMMyID'};
+        repository._users = [user];
+        var callback = jasmine.createSpy('callback');
+
+        repository.getByUserID('DummyiD', callback);
+
+        expect(callback).toHaveBeenCalledWith(user);
     });
 
 });
