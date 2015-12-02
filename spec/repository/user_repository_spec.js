@@ -24,4 +24,26 @@ describe('userRepository', function() {
         expect(repository.exists('unknown user', 'with unknown password')).toBeFalsy();
     });
 
+    it('getByUserID should return user by it\'s userID', function() {
+        var u1 = {userID: 'dummyID1'},
+            u2 = {userID: 'dummyID2'};
+        repository._users = [u1, u2];
+        var callback = jasmine.createSpy('callback');
+
+        repository.getByUserID('dummyID1', callback);
+
+        expect(callback).toHaveBeenCalledWith(u1);
+    });
+
+    it('getByUserID should return null if user is not found by userID', function() {
+        var u1 = {userID: 'dummyID1'},
+            u2 = {userID: 'dummyID2'};
+        repository._users = [u1, u2];
+        var callback = jasmine.createSpy('callback');
+
+        repository.getByUserID('dummyID3', callback);
+
+        expect(callback).toHaveBeenCalledWith(null);
+    });
+
 });

@@ -27,22 +27,4 @@ describe('Role', function() {
         expect(role.roleIDs).toEqual([1, 2, 3, 5]);
     });
 
-    it('matches should return true if role1 has all role ids of role2', function() {
-        var role1 = new Role();
-        var role2 = new Role();
-        role1.roleIDs = [1, 2, 3, 4, 5];
-        role2.roleIDs = [2, 3, 4];
-
-        expect(role1.matches(role2)).toBeTruthy();
-    });
-
-    it('matches should return false if role1 has not all role ids of role2', function() {
-        var role1 = new Role();
-        var role2 = new Role();
-        role1.roleIDs = [1, 2, 3, 4, 5];
-        role2.roleIDs = [2, 3, 4, 6];
-
-        expect(role1.matches(role2)).toBeFalsy();
-    });
-
 });

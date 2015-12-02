@@ -1,7 +1,9 @@
+var Role = require('../model/role');
+
 var userRepository = {};
 
 userRepository._users = [
-    {userID: 'dmitry.papka', password: 'abcdefg123'}
+    {ID: 1, userID: 'dmitry.papka', password: 'abcdefg123', role: Role.ADMINISTRATOR}
 ];
 
 userRepository.exists = function(userID, password) {
@@ -12,6 +14,15 @@ userRepository.exists = function(userID, password) {
         }
     });
     return found;
+};
+
+userRepository.getByUserID = function(userID, callback) {
+    var matches = this._users.filter(function(user) {
+        return user.userID === userID;
+    });
+
+    var user =  matches.length > 0 ? matches[0] : null;
+    callback(user);
 };
 
 module.exports = userRepository;

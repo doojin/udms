@@ -13,13 +13,10 @@ function Role(anotherRole) {
 
 Role._counter = 0;
 
-Role.prototype.matches = function(role) {
-    var ownIDs = this.roleIDs;
-    var matchingIDs = role.roleIDs;
-
-    return ownIDs.filter(function(id) {
-        return matchingIDs.indexOf(id) > -1
-    }).length == matchingIDs.length;
-};
+Role.UNAUTHORIZED = new Role();
+Role.AUTHORIZED = new Role();
+Role.STUDENT = new Role(Role.AUTHORIZED);
+Role.PROFESSOR = new Role(Role.AUTHORIZED);
+Role.ADMINISTRATOR = new Role(Role.PROFESSOR);
 
 module.exports = Role;

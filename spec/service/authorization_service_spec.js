@@ -1,5 +1,5 @@
 var authService = require('../../src/service/authorization_service'),
-    roleService = require('../../src/service/role_service');
+    Role = require('../../src/model/role');
 
 describe('authorization_service', function() {
 
@@ -15,7 +15,7 @@ describe('authorization_service', function() {
 
         expect(req.session.auth.ID).toBeNull();
         expect(req.session.auth.userID).toBeNull();
-        expect(req.session.auth.role).toEqual(roleService.ROLES.unauthorized);
+        expect(req.session.auth.role).toEqual(Role.UNAUTHORIZED);
     });
 
     it('_populateUserData should populate response locals with user data', function() {
@@ -30,6 +30,61 @@ describe('authorization_service', function() {
 
         expect(res.locals.ID).toEqual(1);
         expect(res.locals.userID).toEqual('dummy user id');
+    });
+
+    it('isAuthorized should return true if user has one of the authorized roles', function() {
+        var req = {
+            session: {
+                auth: {
+                    role: Role.AUTHORIZED
+                }
+            }
+        };
+
+        expect(authService.isAuthorized(req)).toBeTruthy();
+
+        req.session.auth.role = Role.STUDENT;
+        expect(authService.isAuthorized(req)).toBeTruthy();
+
+        req.session.auth.role = Role.PROFESSOR;
+        expect(authService.isAuthorized(req)).toBeTruthy();
+    });
+
+    it('isAuthorized should return false if user has no authorized roles', function() {
+        var req = {
+            session: {
+                auth: {
+                    role: Role.UNAUTHORIZED
+                }
+            }
+        };
+
+        expect(authService.isAuthorized(req)).toBeFalsy();
+    });
+
+    it('authorize should populate session with user data', function() {
+        var user = {
+            ID: 'dummy ID',
+            userID: 'dummy userID',
+            role: 'dummy role'
+        };
+        var req = {
+            session: {
+                auth: {
+
+                }
+            }
+        };
+
+        expect(req.session.auth.ID).toBeUndefined();
+        expect(req.session.auth.userID).toBeUndefined();
+        expect(req.session.auth.role).toBeUndefined();
+
+        authService.authorize(req, user);
+
+        expect(req.session.auth.ID).toEqual('dummy ID');
+        expect(req.session.auth.userID).toEqual('dummy userID');
+        expect(req.session.auth.role).toEqual('dummy role');
     });
 
 });

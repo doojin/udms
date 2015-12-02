@@ -1,5 +1,6 @@
 var list = [
-    require('./auth_controller')
+    require('./auth_controller'),
+    require('./notification_controller')
 ];
 
 module.exports = {};

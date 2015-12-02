@@ -1,4 +1,6 @@
-var userService = require('../service/user_service');
+var userService = require('../service/user_service'),
+    userRepository = require('../repository/user_repository'),
+    authService = require('../service/authorization_service');
 
 module.exports = {
 
@@ -9,8 +11,12 @@ module.exports = {
 
 };
 
-function getAuth(req, res) {
-    res.render('authorization');
+function getAuth(req, res, next) {
+    if (!authService.isAuthorized(req)) {
+        res.render('authorization');
+        return;
+    }
+    next();
 }
 
 function getLogin(req, res) {
@@ -18,6 +24,11 @@ function getLogin(req, res) {
         password = req.query.password;
 
     userService.exists(userID, password, function(userExists) {
+        if (userExists) {
+            userRepository.getByUserID(userID, function(user) {
+                authService.authorize(req, user);
+            });
+        }
         res.json({success: userExists});
     });
 }

@@ -1,13 +1,12 @@
-var Role = require('../model/role');
+var roleService = {};
 
-var roleService = {
-    ROLES: {}
+roleService.matches = function(role1, role2) {
+    var role1IDs = role1.roleIDs,
+        role2IDs = role2.roleIDs;
+
+    return role1IDs.filter(function(id) {
+            return role2IDs.indexOf(id) > -1
+        }).length == role2IDs.length;
 };
-
-roleService.ROLES.unauthorized = new Role();
-roleService.ROLES.authorized = new Role();
-roleService.ROLES.student = new Role(roleService.ROLES.authorized);
-roleService.ROLES.professor = new Role(roleService.ROLES.authorized);
-roleService.ROLES.administrator = new Role(roleService.ROLES.professor);
 
 module.exports = roleService;
