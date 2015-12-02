@@ -91,7 +91,7 @@ define([
             expect(loginForm._clearErrors).toHaveBeenCalled();
         });
 
-        it('_clearErrors should remove all errors from the form', function() {
+        it('_clearErrors should remove all errors from the form if no argument is passed', function() {
             var form = $('<form>');
             var error1 = $('<small class="error">');
             var error2 = $('<small class="error">');
@@ -105,6 +105,39 @@ define([
 
             errors = form.find('small');
             expect(errors.length).toEqual(0);
+        });
+
+        it('_clearErrors should remove error for the form element if argument is passed', function() {
+            var label1 = $('<label>');
+            var field1 = $('<input>');
+            var error1 = $('<small>').addClass('error');
+            label1.append(field1).append(error1);
+
+            var label2 = $('<label>');
+            var field2 = $('<input>');
+            var error2 = $('<small>').addClass('error');
+            label2.append(field2).append(error2);
+
+            var loginForm = new LoginForm();
+
+            var userIDError = $(label1).find('small');
+            var userPasswordError = $(label2).find('small');
+            expect(userIDError.length).toEqual(1);
+            expect(userPasswordError.length).toEqual(1);
+
+            loginForm._clearErrors(field1);
+
+            userIDError = $(label1).find('small');
+            userPasswordError = $(label2).find('small');
+            expect(userIDError.length).toEqual(0);
+            expect(userPasswordError.length).toEqual(1);
+
+            loginForm._clearErrors(field2);
+
+            userIDError = $(label1).find('small');
+            userPasswordError = $(label2).find('small');
+            expect(userIDError.length).toEqual(0);
+            expect(userPasswordError.length).toEqual(0);
         });
 
         it('_validate should remove all errors from the form', function() {
@@ -318,6 +351,24 @@ define([
             var error = label.find('small');
             expect(error.length).toEqual(1);
             expect(error.html()).toEqual('dummy error');
+        });
+
+        it('_addError should remove previous field errors before adding new one', function() {
+            var field = $('<input>').attr('id', 'user-id');
+            var label = $('<label>');
+            label.append(field);
+            var error1 = $('<small>').addClass('error');
+            var error2 = $('<small>').addClass('error');
+            label.append(error1)
+                .append(error2);
+            var loginForm = new LoginForm();
+
+            expect(label.find('small').length).toEqual(2);
+
+            loginForm._addError(field, 'dummy error');
+
+            expect(label.find('small').length).toEqual(1);
+            expect(label.find('small').html()).toEqual('dummy error');
         });
     });
 

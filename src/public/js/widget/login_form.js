@@ -59,8 +59,17 @@ define([
         this._clearErrors();
     };
 
-    LoginForm.prototype._clearErrors = function() {
-        this.form.find('small.error').remove();
+    LoginForm.prototype._clearErrors = function(element) {
+        var ERROR_SELECTOR = 'small.error';
+
+        // Remove all form errors
+        if (element === undefined) {
+            this.form.find(ERROR_SELECTOR).remove();
+            return;
+        }
+
+        // Remove errors for specified form element
+        $(element).parent('label').find(ERROR_SELECTOR).remove();
     };
 
     LoginForm.prototype._validate = function(callback) {
@@ -101,6 +110,8 @@ define([
     };
 
     LoginForm.prototype._addError = function(element, errorMessage) {
+        this._clearErrors(element);
+
         var label = $(element).parent('label');
         var error = $('<small>').addClass('error')
             .html(errorMessage);
