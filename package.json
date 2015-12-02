@@ -18,7 +18,8 @@
   "homepage": "https://github.com/doojin/udms#readme",
   "dependencies": {
     "express": "^4.13.3",
-    "express-handlebars": "^2.0.1"
+    "express-handlebars": "^2.0.1",
+    "express-session": "^1.12.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
