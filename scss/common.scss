@@ -1,5 +1,6 @@
 $header-height: 70px;
 $double-header-height: $header-height * 2;
+$triple-header-height: $header-height * 2.5;
 
 body {
     overflow-x: hidden;
@@ -9,6 +10,7 @@ body {
         background-color: $dark-bg;
 
         @media #{$large-up} { height: $header-height; }
+        @media #{$small-only} { height: $triple-header-height; }
         height: $double-header-height;
 
         @media #{$large-up} { line-height: $header-height; }
@@ -16,17 +18,23 @@ body {
 
         margin-bottom: 10px;
 
+        @media #{$small-only} { padding-top: 1rem; }
+
         @media #{$large-up} { text-align: initial; }
         text-align: center;
 
         .logo {
+            @media #{$small-only} { background: none; }
             background: { image: url('/img/logo.png'); repeat: no-repeat; position: left center; }
             display: inline-block;
             font: { size: 1.1rem; weight: bold; }
 
+            @media #{$small-only} { line-height: 1.4rem; }
+
             @media #{$large-up} { margin-top: 0; }
             margin-top: $header-height * 0.2;
 
+            @media #{$small-only} { padding-left: 0; }
             padding-left: 50px;
 
             a { color: #525252; }
@@ -37,7 +45,15 @@ body {
 
             @media #{$large-up} { float: right; }
 
-            & > span { margin-right: 10px; }
+            @media #{$small-only} { line-height: 1rem; }
+
+            & > span {
+                margin-right: 10px;
+
+                @media #{$small-only} { display: block; }
+                @media #{$small-only} { margin-bottom: 10px; }
+                @media #{$small-only} { width: 100%; }
+            }
         }
     }
 }
