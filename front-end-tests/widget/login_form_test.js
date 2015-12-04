@@ -22,7 +22,7 @@ define([
 
             loginForm.bindShowTrigger(button, 'click');
 
-            expect(slidable.bind).toHaveBeenCalledWith(button, 'click', form);
+            expect(slidable.bind).toHaveBeenCalledWith(button, 'click', $(form));
         });
 
         it('bindShowTrigger should clear form errors when form is shown', function() {

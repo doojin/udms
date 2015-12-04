@@ -10,7 +10,8 @@
   "moduleType": [],
   "private": true,
   "dependencies": {
-    "foundation": "*"
+    "foundation": "*",
+    "jquery": "~2.1.4"
   },
   "devDependencies": {
     "jasmine-core": "jasmine#~2.3.4"

@@ -1,5 +1,5 @@
-define(['jqueryGlobal'], function() {
+define(['jquery'], function() {
 
-    return $.noConflict(true);
+    return $.noConflict(false);
 
 });

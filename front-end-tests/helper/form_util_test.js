@@ -25,7 +25,7 @@ define(['helper/jquery', 'helper/form_util'], function($, formUtil) {
             passwordInput.trigger(createEnterPressEvent());
 
             expect(callback.calls.count()).toEqual(2);
-            expect(callback).toHaveBeenCalledWith(form);
+            expect(callback).toHaveBeenCalledWith($(form));
         });
 
         it('onEnter should not add any other key press listeners but for Enter key', function() {

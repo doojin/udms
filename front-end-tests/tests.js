@@ -10,7 +10,8 @@
             'jasmine-html': BOWER_DIR + 'jasmine-core/lib/jasmine-core/jasmine-html',
             'boot': BOWER_DIR + 'jasmine-core/lib/jasmine-core/boot',
             'tests': '../../../front-end-tests/',
-            'jqueryGlobal': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min'
+            'jquery': 'vendor/jquery.min',
+            'mmenu': 'https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/5.5.3/core/js/jquery.mmenu.min.all'
         },
         shim: {
             'jasmine-html': {
@@ -20,6 +21,9 @@
             'boot': {
                 exports: 'jasmineRequire',
                 deps: ['jasmine', 'jasmine-html']
+            },
+            'mmenu': {
+                deps: ['jquery']
             }
         }
     });
@@ -32,7 +36,8 @@ define(['helper/jquery', 'boot'], function($) {
         'tests/helper/form_util_test',
         'tests/widget/login_form_test',
         'tests/helper/slidable_test',
-        'tests/widget/log_off_button_test'
+        'tests/widget/log_off_button_test',
+        'tests/widget/menu_test'
     ];
 
     require(tests, function() {
