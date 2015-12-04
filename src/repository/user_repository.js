@@ -3,7 +3,10 @@ var Role = require('../model/role');
 var userRepository = {};
 
 userRepository._users = [
-    {ID: 1, userID: 'dmitry.papka', password: 'abcdefg123', role: Role.ADMINISTRATOR}
+    {ID: 1, userID: 'dmitry.papka', password: 'abcdefg123', role: Role.ADMINISTRATOR},
+    {ID: 2, userID: 'professor', password: 'p', role: Role.PROFESSOR},
+    {ID: 3, userID: 'student', password: 's', role: Role.STUDENT},
+    {ID: 4, userID: 'admin', password: 'a', role: Role.ADMINISTRATOR}
 ];
 
 userRepository.exists = function(userID, password) {

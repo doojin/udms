@@ -29,12 +29,25 @@ authService.logoff = function(req) {
 
 // Used as middleware on each request
 authService._populateUserData = function(req, res, next) {
-    req.session.auth = req.session.auth === undefined ? UNAUTHORIZED : req.session.auth;
+    var auth = req.session.auth = req.session.auth === undefined ?
+        UNAUTHORIZED : req.session.auth;
 
-    res.locals.ID = req.session.auth.ID;
-    res.locals.userID = req.session.auth.userID;
+    res.locals.ID = auth.ID;
+    res.locals.userID = auth.userID;
+
+    authService._populateUserRoles(res, auth.role);
 
     next();
+};
+
+authService._populateUserRoles = function(res, role) {
+    res.locals.roles = {
+        'unauthorized': roleService.matches(role, Role.UNAUTHORIZED),
+        'authorized': roleService.matches(role, Role.AUTHORIZED),
+        'student': roleService.matches(role, Role.STUDENT),
+        'professor': roleService.matches(role, Role.PROFESSOR),
+        'administrator': roleService.matches(role, Role.ADMINISTRATOR)
+    };
 };
 
 module.exports = authService;
