@@ -1,15 +1,15 @@
 var User = require('../repository/entity/user'),
-    Role = require('../model/role');
+    Role = require('../model/role'),
+    securityService = require('../service/security_service');
 
 var userRepository = {};
 
 userRepository.exists = function(userID, password, callback) {
-    var userIDLowercase = userID.toLowerCase();
-    User.count({ userIDLowercase: userIDLowercase, password: password })
-        .then(function(count) {
-            var result = count > 0;
+    this.getByUserID(userID, function(user) {
+        securityService.comparePasswords(password, user.password, function(result) {
             callback(result);
         });
+    });
 };
 
 userRepository.getByUserID = function(userID, callback) {
