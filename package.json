@@ -19,7 +19,8 @@
   "dependencies": {
     "express": "^4.13.3",
     "express-handlebars": "^2.0.1",
-    "express-session": "^1.12.1"
+    "express-session": "^1.12.1",
+    "mongoose": "^4.2.9"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

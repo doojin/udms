@@ -5,12 +5,17 @@ describe('authorization_service', function() {
 
     var req, res, next;
     beforeEach(function() {
-        req = { session: {} };
+        req = { session: {
+                save: jasmine.createSpy('save'),
+                auth: {}
+            }
+        };
         res = { locals: {} };
         next = jasmine.createSpy('next');
     });
 
     it('_populateUserData should set auth object to unauthorized if it does\'t exist', function() {
+        req.session.auth = undefined;
         authService._populateUserData(req, res, next);
 
         expect(req.session.auth.ID).toBeNull();
@@ -36,14 +41,7 @@ describe('authorization_service', function() {
     });
 
     it('isAuthorized should return true if user has one of the authorized roles', function() {
-        var req = {
-            session: {
-                auth: {
-                    role: Role.AUTHORIZED
-                }
-            }
-        };
-
+        req.session.auth.role = Role.AUTHORIZED;
         expect(authService.isAuthorized(req)).toBeTruthy();
 
         req.session.auth.role = Role.STUDENT;
@@ -54,13 +52,7 @@ describe('authorization_service', function() {
     });
 
     it('isAuthorized should return false if user has no authorized roles', function() {
-        var req = {
-            session: {
-                auth: {
-                    role: Role.UNAUTHORIZED
-                }
-            }
-        };
+        req.session.auth.role = Role.UNAUTHORIZED;
 
         expect(authService.isAuthorized(req)).toBeFalsy();
     });
@@ -70,13 +62,6 @@ describe('authorization_service', function() {
             ID: 'dummy ID',
             userID: 'dummy userID',
             role: 'dummy role'
-        };
-        var req = {
-            session: {
-                auth: {
-
-                }
-            }
         };
 
         expect(req.session.auth.ID).toBeUndefined();

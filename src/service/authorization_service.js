@@ -21,6 +21,7 @@ authService.authorize = function(req, user) {
     req.session.auth.ID = user.ID;
     req.session.auth.userID = user.userID;
     req.session.auth.role = user.role;
+    req.session.save();
 };
 
 authService.logoff = function(req) {
@@ -29,8 +30,12 @@ authService.logoff = function(req) {
 
 // Used as middleware on each request
 authService._populateUserData = function(req, res, next) {
-    var auth = req.session.auth = req.session.auth === undefined ?
-        UNAUTHORIZED : req.session.auth;
+    if (req.session.auth === undefined) {
+        req.session.auth = UNAUTHORIZED;
+        req.session.save();
+    }
+
+    var auth = req.session.auth;
 
     res.locals.ID = auth.ID;
     res.locals.userID = auth.userID;
