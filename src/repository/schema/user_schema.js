@@ -10,7 +10,9 @@ var userSchema = new mongoose.Schema({
     userID: String,
     userIDLowercase: String,
     password: String,
-    role: roleSchema
+    role: roleSchema,
+    // TODO: change to groupSchema
+    group: String
 }, options);
 
 userSchema.virtual('ID').get(function() {

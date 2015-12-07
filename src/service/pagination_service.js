@@ -15,6 +15,7 @@ service.paginationRequired = function(entity, viewVar) {
                 current = service.validatePage(count, perPage, current);
 
                 var pagination = service.createPagination(count, perPage, current);
+                req.pagination = pagination;
                 if (pagination.shouldDisplay) {
                     res.locals[viewVar] = pagination;
                 }
@@ -40,7 +41,10 @@ service.createPagination = function(records, perPage, current) {
     return pagination;
 };
 
-service.skippedRecords = function(perPage, current) {
+service.skippedRecords = function(req) {
+    var perPage = req.pagination.perPage,
+        current = req.pagination.current;
+
     return perPage * (current - 1);
 };
 

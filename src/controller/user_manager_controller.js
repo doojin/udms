@@ -1,6 +1,8 @@
 var roleRequired = require('../service/role_service').roleRequired,
     Role = require('../model/role'),
-    paginationRequired = require('../service/pagination_service').paginationRequired,
+    paginationService = require('../service/pagination_service'),
+    paginationRequired = paginationService.paginationRequired,
+    userRepository = require('../repository/user_repository'),
     User = require('../repository/entity/user');
 
 module.exports = {
@@ -15,5 +17,11 @@ module.exports = {
 };
 
 function getUserManager(req, res) {
-    res.render('user-manager');
+    var skip = paginationService.skippedRecords(req);
+    var perPage = req.pagination.perPage;
+    userRepository.getLimited(skip, perPage, function(users) {
+        res.render('user-manager', {
+            users: users
+        });
+    });
 }

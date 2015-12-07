@@ -47,8 +47,19 @@ describe('pagination_service', function() {
     });
 
     it('skippedRecords should return the amount of skipped records for the current page', function() {
-        expect(service.skippedRecords(10, 1)).toEqual(0);
-        expect(service.skippedRecords(10, 2)).toEqual(10);
+        var req = {};
+
+        req.pagination = {
+            perPage: 10,
+            current: 1
+        };
+        expect(service.skippedRecords(req)).toEqual(0);
+
+        req.pagination = {
+            perPage: 10,
+            current: 2
+        };
+        expect(service.skippedRecords(req)).toEqual(10);
     });
 
     it('validatePage should return 1 if page value is not a number', function() {
