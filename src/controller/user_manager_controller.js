@@ -3,7 +3,8 @@ var roleRequired = require('./middleware/role_required'),
     paginationService = require('../service/pagination_service'),
     paginationRequired = require('./middleware/pagination_required'),
     userRepository = require('../repository/user_repository'),
-    User = require('../repository/entity/user');
+    User = require('../repository/entity/user'),
+    mainScript = require('./middleware/main_script');
 
 module.exports = {
     apply: function(app) {
@@ -11,6 +12,7 @@ module.exports = {
             '/user-manager/:page?/:perPage?',
             roleRequired(Role.ADMINISTRATOR),
             paginationRequired(User, 'userPagination'),
+            mainScript('user-manager'),
             getUserManager
         )
     }
