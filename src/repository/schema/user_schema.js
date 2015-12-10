@@ -11,7 +11,6 @@ var userSchema = new mongoose.Schema({
     userIDLowercase: String,
     password: String,
     role: roleSchema,
-    // TODO: change to groupSchema
     group: String
 }, options);
 
