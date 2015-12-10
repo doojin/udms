@@ -8,7 +8,8 @@ function Role(anotherRole) {
         });
     }
 
-    this.roleIDs.push(Role._counter++);
+    this.roleIDs.push(Role._counter);
+    this.ID = Role._counter++;
 }
 
 Role._counter = 0;

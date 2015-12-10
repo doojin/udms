@@ -56,6 +56,13 @@ body {
             }
         }
     }
+
+    main {
+
+        #content {
+            margin-top: 1rem;
+        }
+    }
 }
 
 label {
@@ -63,3 +70,5 @@ label {
         margin-top: -1rem;
     }
 }
+
+.full-width { width: 100%; }

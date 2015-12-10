@@ -38,7 +38,8 @@ define(['helper/jquery', 'boot'], function($) {
         'tests/helper/slidable_test',
         'tests/widget/log_off_button_test',
         'tests/widget/menu_test',
-        'tests/widget/table_test'
+        'tests/widget/table_test',
+        'tests/render/user_table_render_test'
     ];
 
     require(tests, function() {
