@@ -20,8 +20,11 @@ function getUserManager(req, res) {
     var skip = paginationService.skippedRecords(req);
     var perPage = req.pagination.perPage;
     userRepository.getLimited(skip, perPage, function(users) {
+        users.forEach(function(user) {
+            delete user.password;
+        });
         res.render('user-manager', {
-            users: users
+            users: JSON.stringify(users)
         });
     });
 }
