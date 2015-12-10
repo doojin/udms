@@ -84,68 +84,6 @@ describe('pagination_service', function() {
         expect(service._calculatePages({ left: 5, right: 11 })).toEqual([5, 6, 7, 8, 9, 10, 11]);
     });
 
-    it('paginationRequired should use parameters from request for pagination creation', function(done) {
-        var req = {};
-        req.params = {};
-        req.params.page = 5;
-        req.params.perPage = 10;
-
-        var res = {};
-        res.locals = {};
-
-        var next = jasmine.createSpy('next');
-
-        var entity = {
-            count: jasmine.createSpy('count').and.returnValue(
-                {
-                    then: function(callback) {
-                        callback(20);
-                        done();
-                    }
-                }
-            )
-        };
-
-        spyOn(service, 'validatePage').and.returnValue(5);
-        spyOn(service, 'createPagination').and.returnValue({});
-
-        var func = service.paginationRequired(entity, 'dummy');
-
-        func(req, null, next);
-
-        expect(service.createPagination).toHaveBeenCalledWith(5, 10, 20);
-    });
-
-    it('paginationRequired should populate response locals', function(done) {
-        var req = {};
-        req.params = {};
-
-        res = {};
-        res.locals = {};
-
-        var next = jasmine.createSpy('next');
-
-        var entity = {
-            count: jasmine.createSpy('count').and.returnValue(
-                {
-                    then: function(callback) {
-                        callback();
-                        done();
-                    }
-                }
-            )
-        };
-
-        var pagination = { shouldDisplay: true };
-        spyOn(service, 'createPagination').and.returnValue(pagination);
-
-        var func = service.paginationRequired(entity, 'viewField');
-
-        func(req, res, next);
-
-        expect(res.locals.viewField).toEqual(pagination);
-    });
-
     it('validatePerPage should validate perPage value correctly', function() {
         expect(service.validatePerPage('5')).toEqual(5);
         expect(service.validatePerPage('10')).toEqual(10);

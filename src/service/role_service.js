@@ -9,15 +9,4 @@ roleService.matches = function(role1, role2) {
         }).length == role2IDs.length;
 };
 
-roleService.roleRequired = function(role) {
-    return function(req, res, next) {
-        var actualRole = req.session.auth.role;
-        if (!roleService.matches(actualRole, role)) {
-            res.redirect('/');
-            return;
-        }
-        next();
-    };
-};
-
 module.exports = roleService;

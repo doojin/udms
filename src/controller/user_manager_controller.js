@@ -1,7 +1,7 @@
-var roleRequired = require('../service/role_service').roleRequired,
+var roleRequired = require('./middleware/role_required'),
     Role = require('../model/role'),
     paginationService = require('../service/pagination_service'),
-    paginationRequired = paginationService.paginationRequired,
+    paginationRequired = require('./middleware/pagination_required'),
     userRepository = require('../repository/user_repository'),
     User = require('../repository/entity/user');
 
