@@ -1,14 +1,11 @@
-<!--<style>-->
-    <!--a.current-page {-->
-        <!--color: green;-->
-    <!--}-->
-<!--</style>-->
-<!--{{#if shouldDisplay}}-->
-    <!--<a href="{{ link }}/{{ min }}"{{#equal min current}} class="current-page"{{/equal}}>[{{ min }}]</a>-->
-    <!--{{#if margins.left}} ... {{/if}}-->
-    <!--{{#each pages }}-->
-        <!--<a href="{{ ../link }}/{{ this }}"{{#equal this ../current}} class="current-page"{{/equal}}>[{{ this }}]</a>-->
-    <!--{{/each}}-->
-    <!--{{#if margins.right}} ... {{/if}}-->
-    <!--<a href="{{ link }}/{{ max }}"{{#equal max current}} class="current-page"{{/equal}}>[{{ max }}]</a>-->
-<!--{{/if}}-->
+{{#if shouldDisplay}}
+    <div class="pagination text-center">
+        <a href="{{ link }}/{{ min }}" class="tiny button radius{{#equal min current}} current-page{{/equal}}">{{ min }}</a>
+        {{#if margins.left}} ... {{/if}}
+        {{#each pages }}
+            <a href="{{ ../link }}/{{ this }}" class="tiny button radius{{#equal this ../current}} current-page{{/equal}}">{{ this }}</a>
+        {{/each}}
+        {{#if margins.right}} ... {{/if}}
+        <a href="{{ link }}/{{ max }}" class="tiny button radius{{#equal max current}} current-page{{/equal}}">{{ max }}</a>
+    </div>
+{{/if}}

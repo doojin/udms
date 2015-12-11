@@ -60,7 +60,10 @@ body {
     main {
 
         #content {
-            margin-top: 1rem;
+            margin: {
+                top: 1rem;
+                bottom: 2rem;
+            }
         }
     }
 }

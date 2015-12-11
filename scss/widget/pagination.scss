@@ -1,0 +1,9 @@
+.pagination {
+    margin-top: 2rem;
+
+    a {
+        @include button-style($bg: #ddd);
+
+        &.current-page { @include button-style($bg: #999); }
+    }
+}
