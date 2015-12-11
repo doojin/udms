@@ -1,16 +1,21 @@
-define(['service/role_service'], function(roleService) {
+define(['service/role_service', 'helper/jquery'], function(roleService, $) {
 
     function userTableRender(user, columns) {
+        var label;
+
         // User ID
-        columns[0] = user.userID;
+        label = $('<span>').addClass('lbl').html('User ID:');
+        columns[0] = label.prop('outerHTML') + user.userID;
 
         // User Role
-        columns[1] = roleService.roleName(user.role);
+        label = $('<span>').addClass('lbl').html('User Role:');
+        columns[1] = label.prop('outerHTML') + roleService.roleName(user.role);
 
         // User group
+        label = $('<span>').addClass('lbl').html('User Group:');
         var group = user.group && user.group.name;
-        columns[2] = group ? group : 'No Group';
-
+        var groupName = group ? group : 'No Group';
+        columns[2] = label.prop('outerHTML') + groupName;
     }
 
     return userTableRender;

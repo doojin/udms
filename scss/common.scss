@@ -72,3 +72,18 @@ label {
 }
 
 .full-width { width: 100%; }
+table.full-width {
+
+    thead { @media #{$small-only} { display: none; } }
+
+    td {
+        @media #{$small-only} { display: block; }
+
+        .lbl {
+            @media #{$small-only} { display: inline-block; }
+            display: none;
+
+            @media #{$small-only} { width: 50%; }
+        }
+    }
+}
