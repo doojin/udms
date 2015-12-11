@@ -1,13 +1,14 @@
-define(function() {
+define(['service/role_service'], function(roleService) {
 
-    function userTableRender(data, columns) {
+    function userTableRender(user, columns) {
         // User ID
-        columns[0] = data.userID;
+        columns[0] = user.userID;
 
-        columns[1] = "";
+        // User Role
+        columns[1] = roleService.roleName(user.role);
 
         // User group
-        var group = data.group && data.group.name;
+        var group = user.group && user.group.name;
         columns[2] = group ? group : 'No Group';
 
     }
