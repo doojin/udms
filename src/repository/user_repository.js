@@ -6,6 +6,10 @@ var userRepository = {};
 
 userRepository.exists = function(userID, password, callback) {
     this.getByUserID(userID, function(user) {
+        if (user === null) {
+            callback(false);
+            return;
+        }
         securityService.comparePasswords(password, user.password, function(result) {
             callback(result);
         });
