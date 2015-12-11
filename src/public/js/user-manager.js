@@ -8,11 +8,11 @@ define([
     $
 ) {
 
-    var content = $('#content');
+    var wrapper = $('#user-list');
 
     var userTable = new Table(users, userTableRender);
     userTable.header = ['User ID', 'Role', 'Group'];
     userTable.addClass('full-width');
-    content.append(userTable.build());
+    wrapper.append(userTable.build());
 
 });
