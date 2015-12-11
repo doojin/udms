@@ -11,7 +11,8 @@ var userSchema = new mongoose.Schema({
     userIDLowercase: String,
     password: String,
     role: roleSchema,
-    group: String
+    group: String,
+    lastActive: Date
 }, options);
 
 userSchema.virtual('ID').get(function() {

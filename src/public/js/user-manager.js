@@ -12,7 +12,7 @@ define([
     var wrapper = $('#user-list');
 
     var userTable = new Table(users, userTableRender);
-    userTable.header = ['User ID', 'Role', 'Group'];
+    userTable.header = ['User ID', 'Role', 'Group', 'Last Active'];
     userTable.addClass('full-width');
     wrapper.append(userTable.build());
 

@@ -1,4 +1,12 @@
-define(['render/user_table_render', 'service/role_service'], function(render, roleService) {
+define([
+    'render/user_table_render',
+    'service/role_service',
+    'service/time_service'
+], function(
+    render,
+    roleService,
+    timeService
+) {
 
     describe('render/user_table_render', function() {
 
@@ -36,6 +44,15 @@ define(['render/user_table_render', 'service/role_service'], function(render, ro
             render({}, columns);
 
             expect(columns[1]).toEqual('<span class="lbl">User Role:</span>Dummy Role');
+        });
+
+        it('should render user activity column correctly', function() {
+            spyOn(timeService, 'timePassed').and.returnValue('dummy time ago');
+            var columns = [];
+
+            render({}, columns);
+
+            expect(columns[3]).toEqual('<span class="lbl">Last Active:</span>dummy time ago');
         });
 
     });

@@ -38,4 +38,11 @@ userRepository.getLimited = function(skipAmt, limit, callback) {
         });
 };
 
+userRepository.updateActivity = function(id) {
+    var update = { lastActive: Date.now() };
+    User.update({ _id: id }, update, function(err, updated) {
+        // User activity is updated
+    });
+};
+
 module.exports = userRepository;

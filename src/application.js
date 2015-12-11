@@ -4,7 +4,8 @@ var express = require('express'),
     mongoConfig = require('./config/mongo_config'),
     controllers = require('./controller/controllers'),
     sessionService = require('./service/session_service'),
-    authorizationService = require('./service/authorization_service');
+    authorizationService = require('./service/authorization_service'),
+    userService = require('./service/user_service');
 
 var app = express();
 
@@ -14,6 +15,7 @@ viewConfig.setUp(app);
 
 sessionService.bind(app);
 authorizationService.bind(app);
+userService.bind(app);
 
 controllers.applyAll(app);
 

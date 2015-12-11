@@ -1,21 +1,30 @@
-define(['service/role_service', 'helper/jquery'], function(roleService, $) {
+define(['service/role_service', 'service/time_service', 'helper/jquery'], function(roleService, timeService, $) {
 
     function userTableRender(user, columns) {
         var label;
 
         // User ID
-        label = $('<span>').addClass('lbl').html('User ID:');
-        columns[0] = label.prop('outerHTML') + user.userID;
+        label = createLabel('User ID:');
+        columns[0] = label + user.userID;
 
         // User Role
-        label = $('<span>').addClass('lbl').html('User Role:');
-        columns[1] = label.prop('outerHTML') + roleService.roleName(user.role);
+        label = createLabel('User Role:');
+        columns[1] = label + roleService.roleName(user.role);
 
         // User group
-        label = $('<span>').addClass('lbl').html('User Group:');
+        label = createLabel('User Group:');
         var group = user.group && user.group.name;
         var groupName = group ? group : 'No Group';
-        columns[2] = label.prop('outerHTML') + groupName;
+        columns[2] = label + groupName;
+
+        label = createLabel('Last Active:');
+        columns[3] = label + timeService.timePassed(user.lastActive);
+    }
+
+    function createLabel(text) {
+        return $('<span>').addClass('lbl')
+            .html(text)
+            .prop('outerHTML');
     }
 
     return userTableRender;

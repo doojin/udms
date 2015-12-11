@@ -39,7 +39,9 @@ define(['helper/jquery', 'boot'], function($) {
         'tests/widget/log_off_button_test',
         'tests/widget/menu_test',
         'tests/widget/table_test',
-        'tests/render/user_table_render_test'
+        'tests/render/user_table_render_test',
+        'tests/service/role_service_test',
+        'tests/service/time_service_test'
     ];
 
     require(tests, function() {
