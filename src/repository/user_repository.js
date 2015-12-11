@@ -29,6 +29,7 @@ userRepository.getLimited = function(skipAmt, limit, callback) {
     User.find()
         .skip(skipAmt)
         .limit(limit)
+        .sort([['created', 'descending']])
         .then(function(users) {
             var result = [];
             users.forEach(function(user) {

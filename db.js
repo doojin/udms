@@ -10,10 +10,8 @@ deleteUsers();
 function deleteUsers() {
     User.remove({})
         .then(function() {
-            console.log('All users were deleted');
-
-            addBaseUsers();
             addDummyUsers();
+            addBaseUsers();
         });
 }
 
@@ -65,7 +63,7 @@ function addDummyUsers() {
             })
                 .save()
                 .then(function() {
-                    console.log('Dummy User ' + j + ' was created.')
+                    console.log('Dummy User ' + j + ' was created.');
                 });
         }(i));
     }

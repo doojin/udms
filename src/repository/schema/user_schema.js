@@ -3,7 +3,10 @@ var mongoose = require('mongoose'),
 
 var options = {
     toObject: { virtuals: true },
-    toJSON: { virtuals: true }
+    toJSON: { virtuals: true },
+    timestamps: {
+        createdAt: 'created'
+    }
 };
 
 var userSchema = new mongoose.Schema({
