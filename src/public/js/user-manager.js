@@ -1,7 +1,8 @@
 define([
     'widget/table',
     'render/user_table_render',
-    'helper/jquery'
+    'helper/jquery',
+    'common_logic'
 ], function(
     Table,
     userTableRender,
