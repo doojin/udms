@@ -16,6 +16,16 @@ define(function() {
         return roleName ? roleName : 'Unknown Role';
     };
 
+    roleService.roles = function() {
+        var authorizedRoles = {};
+        for (var i in roles) {
+            if (parseInt(i) > 1) {
+                authorizedRoles[i] = roles[i];
+            }
+        }
+        return authorizedRoles;
+    };
+
     return roleService;
 
 });

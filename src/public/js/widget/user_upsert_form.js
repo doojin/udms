@@ -1,8 +1,17 @@
-define(['helper/jquery', 'helper/slidable'], function($, slidable) {
+define([
+    'helper/jquery',
+    'helper/slidable',
+    'service/role_service'
+], function(
+    $,
+    slidable,
+    roleService
+) {
 
     function UserUpsertForm(selector) {
         this._form = $(selector);
         this._addGroupChangeListener();
+        this._populateRoles();
     }
 
     UserUpsertForm.prototype.bindNewUserEvent = function(trigSelector, trigEvent) {
@@ -45,6 +54,17 @@ define(['helper/jquery', 'helper/slidable'], function($, slidable) {
             // Old group selected
             groupNameRow.addClass('invisible');
         });
+    };
+
+    UserUpsertForm.prototype._populateRoles = function() {
+        var roles = roleService.roles();
+        for (var i in roles) {
+            //noinspection JSUnfilteredForInLoop
+            var option = $('<option>')
+                .val(i)
+                .html(roles[i]);
+            this._getUserRoleSelect().append(option);
+        }
     };
 
     UserUpsertForm.prototype._getUserIDInput = function() {

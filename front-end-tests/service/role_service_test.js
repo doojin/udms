@@ -31,6 +31,15 @@ define(['service/role_service'], function(service) {
             expect(service.roleName({})).toEqual('Unknown Role');
         });
 
+        it('roles should return Student, Professor and Administrator roles', function() {
+            var roles = service.roles();
+            expect(roles).toEqual({
+                2: 'Student',
+                3: 'Professor',
+                4: 'Administrator'
+            });
+        });
+
     });
 
 });

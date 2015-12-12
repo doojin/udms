@@ -1,4 +1,14 @@
-define(['widget/user_upsert_form', 'helper/jquery', 'helper/slidable'], function(Form, $, slidable) {
+define([
+    'widget/user_upsert_form',
+    'helper/jquery',
+    'helper/slidable',
+    'service/role_service'
+], function(
+    Form,
+    $,
+    slidable,
+    roleService
+) {
 
     describe('widget/user_upsert_form', function() {
 
@@ -105,6 +115,23 @@ define(['widget/user_upsert_form', 'helper/jquery', 'helper/slidable'], function
             userGroup.val('1').change();
 
             expect(groupNameRow.hasClass('invisible')).toBeFalsy();
+        });
+
+        it('_populateRoles should populate user roles', function() {
+            var upsertForm = new Form();
+            var userRolesSelect = $('<select>').addClass('user-role');
+            upsertForm._form = $('<div>').append(userRolesSelect);
+            spyOn(roleService, 'roles').and.returnValue({
+                '1': 'Dummy role 1',
+                '2': 'Dummy role 2'
+            });
+
+            upsertForm._populateRoles();
+
+            var options = userRolesSelect.find('option');
+            expect(options.length).toEqual(2);
+            expect(options[0].outerHTML).toEqual('<option value="1">Dummy role 1</option>');
+            expect(options[1].outerHTML).toEqual('<option value="2">Dummy role 2</option>');
         });
     });
 
