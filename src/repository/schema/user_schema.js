@@ -14,7 +14,7 @@ var userSchema = new mongoose.Schema({
     userIDLowercase: String,
     password: String,
     role: roleSchema,
-    group: String,
+    group: { type: mongoose.Schema.Types.ObjectId, ref: 'Group' },
     lastActive: Date
 }, options);
 
