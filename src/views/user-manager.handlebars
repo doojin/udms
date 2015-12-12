@@ -1,8 +1,16 @@
-<div class="tiny button radius">Create New User</div>
+{{> user_upsert_form }}
 
-<div id="user-list"></div>
+<div class="row">
+    <div class="small-12 columns" id="content">
 
-{{> pagination this.userPagination link='/user-manager' }}
+        <div class="tiny button radius new-user">Create New User</div>
+
+        <div id="user-list"></div>
+
+        {{> pagination this.userPagination link='/user-manager' }}
+
+    </div>
+</div>
 
 <script>
     var users = {{{ users }}};
