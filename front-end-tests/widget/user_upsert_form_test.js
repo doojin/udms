@@ -2,15 +2,21 @@ define([
     'widget/user_upsert_form',
     'helper/jquery',
     'helper/slidable',
-    'service/role_service'
+    'service/role_service',
+    'service/group_service'
 ], function(
     Form,
     $,
     slidable,
-    roleService
+    roleService,
+    groupService
 ) {
 
     describe('widget/user_upsert_form', function() {
+
+        beforeEach(function() {
+            spyOn(groupService, 'groups').and.returnValue([]);
+        });
 
         it('_clearForm should clear all form inputs', function() {
             var userIDInput = $('<input>')
@@ -31,7 +37,8 @@ define([
                 .append(userNewGroupInput)
                 .append(userRoleSelect)
                 .append(userGroupSelect);
-            var upsertForm = new Form(form);
+            var upsertForm = new Form();
+            upsertForm._form = form;
 
             expect(userIDInput.val()).toEqual('dummy value');
             expect(userNewGroupInput.val()).toEqual('dummy value');
@@ -132,6 +139,29 @@ define([
             expect(options.length).toEqual(2);
             expect(options[0].outerHTML).toEqual('<option value="1">Dummy role 1</option>');
             expect(options[1].outerHTML).toEqual('<option value="2">Dummy role 2</option>');
+        });
+
+        it('_populateGroups should populate group <select>', function() {
+            groupService.groups.and.callFake(function(callback) {
+                callback([
+                    { _id: 'id1', name: 'group1'},
+                    { _id: 'id2', name: 'group2'}
+                ]);
+            });
+            var upsertForm = new Form();
+            var firstOption = $('<option>');
+            var groupSelect = $('<select>')
+                .addClass('user-group')
+                .append(firstOption);
+            upsertForm._form = $('<div>').append(groupSelect);
+
+            upsertForm._populateGroups();
+
+            var options = groupSelect.find('option');
+            expect(options.length).toEqual(3);
+            expect(options[0].outerHTML).toEqual('<option></option>');
+            expect(options[1].outerHTML).toEqual('<option value="id1">group1</option>');
+            expect(options[2].outerHTML).toEqual('<option value="id2">group2</option>');
         });
     });
 

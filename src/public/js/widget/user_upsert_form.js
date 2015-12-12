@@ -1,17 +1,20 @@
 define([
     'helper/jquery',
     'helper/slidable',
-    'service/role_service'
+    'service/role_service',
+    'service/group_service'
 ], function(
     $,
     slidable,
-    roleService
+    roleService,
+    groupService
 ) {
 
     function UserUpsertForm(selector) {
         this._form = $(selector);
         this._addGroupChangeListener();
         this._populateRoles();
+        this._populateGroups();
     }
 
     UserUpsertForm.prototype.bindNewUserEvent = function(trigSelector, trigEvent) {
@@ -65,6 +68,23 @@ define([
                 .html(roles[i]);
             this._getUserRoleSelect().append(option);
         }
+    };
+
+    UserUpsertForm.prototype._populateGroups = function() {
+        this._getUserGroupSelect()
+            .find('option:not(:first)')
+            .remove();
+
+        var self = this;
+        groupService.groups(function(groups) {
+            groups.forEach(function(group) {
+                var option = $('<option>')
+                    .val(group._id)
+                    .html(group.name);
+
+                self._getUserGroupSelect().append(option);
+            });
+        });
     };
 
     UserUpsertForm.prototype._getUserIDInput = function() {

@@ -1,7 +1,8 @@
 var list = [
     require('./auth_controller'),
     require('./notification_controller'),
-    require('./user_manager_controller')
+    require('./user_manager_controller'),
+    require('./group_controller')
 ];
 
 module.exports = {};
