@@ -11,7 +11,8 @@
             'boot': BOWER_DIR + 'jasmine-core/lib/jasmine-core/boot',
             'tests': '../../../front-end-tests/',
             'jquery': 'vendor/jquery.min',
-            'mmenu': 'https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/5.5.3/core/js/jquery.mmenu.min.all'
+            'mmenu': 'https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/5.5.3/core/js/jquery.mmenu.min.all',
+            'validator': '../../validator'
         },
         shim: {
             'jasmine-html': {

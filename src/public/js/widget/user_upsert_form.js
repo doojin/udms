@@ -3,13 +3,15 @@ define([
     'helper/slidable',
     'service/role_service',
     'service/group_service',
-    'service/user_service'
+    'service/user_service',
+    'validator/upsert_form_validator'
 ], function(
     $,
     slidable,
     roleService,
     groupService,
-    userService
+    userService,
+    upsertFormValidator
 ) {
 
     function UserUpsertForm(selector) {
@@ -100,6 +102,14 @@ define([
             self._clearErrors();
             var formData = self._collectData();
 
+            // Front-end validation
+            var validationResult = upsertFormValidator.validate(formData);
+            if (!validationResult.success) {
+                self._showErrors(validationResult);
+                return;
+            }
+
+            // Back-end validation & processing
             userService.createUser(formData, function(result) {
                 if (result.success) {
                     self._showSuccessMessage(result.password);

@@ -4,14 +4,16 @@ define([
     'helper/slidable',
     'service/role_service',
     'service/group_service',
-    'service/user_service'
+    'service/user_service',
+    'validator/upsert_form_validator'
 ], function(
     Form,
     $,
     slidable,
     roleService,
     groupService,
-    userService
+    userService,
+    validator
 ) {
 
     describe('widget/user_upsert_form', function() {
@@ -19,6 +21,7 @@ define([
         beforeEach(function() {
             spyOn(groupService, 'groups').and.returnValue([]);
             spyOn(userService, 'createUser');
+            spyOn(validator, 'validate').and.returnValue({ success: true });
         });
 
         it('_clearForm should clear all form inputs', function() {
@@ -462,6 +465,45 @@ define([
             upsertForm._clearErrors();
 
             expect(form.find('.error').length).toEqual(0);
+        });
+
+        it('_addSubmitListener should not process back-end validation if front-end validation is failed', function() {
+            var upsertForm = new Form();
+            var submitButton = $('<button>').addClass('submit');
+            upsertForm._form = $('<div>').append(submitButton);
+            validator.validate.and.returnValue({ success: false });
+
+            upsertForm._addSubmitListener();
+            submitButton.click();
+
+            expect(userService.createUser).not.toHaveBeenCalled();
+        });
+
+        it('_addSubmitListener should process back-end validation if front-end validation is passed', function() {
+            var upsertForm = new Form();
+            var submitButton = $('<button>').addClass('submit');
+            upsertForm._form = $('<div>').append(submitButton);
+            validator.validate.and.returnValue({ success: true });
+
+            upsertForm._addSubmitListener();
+            submitButton.click();
+
+            expect(userService.createUser).toHaveBeenCalled();
+        });
+
+        it('_addSubmitListener should show errors if front-end validation is not passed', function() {
+            var upsertForm = new Form();
+            var submitButton = $('<button>').addClass('submit');
+            upsertForm._form = $('<div>').append(submitButton);
+            validator.validate.and.returnValue({ success: false });
+            spyOn(upsertForm, '_showErrors');
+
+            expect(upsertForm._showErrors).not.toHaveBeenCalled();
+
+            upsertForm._addSubmitListener();
+            submitButton.click();
+
+            expect(upsertForm._showErrors).toHaveBeenCalledWith({ success: false });
         });
     });
 
