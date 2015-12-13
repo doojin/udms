@@ -13,7 +13,7 @@ describe('app_config', function() {
 
         appConfig.setUp(app);
 
-        expect(express.static.calls.count()).toEqual(1);
+        expect(express.static.calls.count()).toEqual(2);
         expect(express.static).toHaveBeenCalledWith('src/public/');
     });
 
