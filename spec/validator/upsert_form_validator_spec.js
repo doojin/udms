@@ -159,4 +159,48 @@ describe('validator/upsert_form_validator', function() {
 
         expect(validator._validateUserNotExists).toHaveBeenCalled();
     });
+
+    it('_validateNewGroupNotExists should add error if new group already exists', function() {
+        data.group = 'new';
+        var result = { groupName: null };
+        groupRepository.exists.and.callFake(function(id, callback) {
+            callback(true);
+        });
+
+        validator._validateNewGroupNotExists(data, result, next);
+
+        expect(result.groupName).toEqual('Group with this name already exists');
+    });
+
+    it('_validateNewGroupNotExists should not add error if group name already has error', function() {
+        data.group = 'new';
+        var result = { groupName: 'dummy error' };
+        groupRepository.exists.and.callFake(function(id, callback) {
+            callback(true);
+        });
+
+        validator._validateNewGroupNotExists(data, result, next);
+
+        expect(result.groupName).toEqual('dummy error');
+    });
+
+    it('_validateNewGroupNotExists should not add error if group not exists', function() {
+        data.group = 'new';
+        var result = { groupName: null };
+        groupRepository.exists.and.callFake(function(id, callback) {
+            callback(false);
+        });
+
+        validator._validateNewGroupNotExists(data, result, next);
+
+        expect(result.groupName).toBeNull();
+    });
+
+    it('_validateNewGroupNotExists should skip validation if group is not new', function() {
+        data.group = 'dummy group';
+
+        validator._validateNewGroupNotExists(data, null, next);
+
+        expect(groupRepository.exists).not.toHaveBeenCalled();
+    });
 });

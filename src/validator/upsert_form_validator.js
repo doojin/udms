@@ -98,12 +98,8 @@
 
             var async = require('async');
             async.waterfall([
-
-                function(callback) {
-                    self._validateUserNotExists(data, result, function() {
-                        callback(data, result);
-                    });
-                }
+                function(callback) { self._validateUserNotExists(data, result, callback); },
+                function(callback) { self._validateNewGroupNotExists(data, result, callback); }
 
             ], function() {
                 self._addStatus(result);
@@ -117,6 +113,19 @@
             var userRepository = require('../repository/user_repository');
             userRepository.IDExists(userID, function(exists) {
                 if (!result.ID && exists) result.ID = ERR_USER_ID_EXISTS;
+                next();
+            });
+        };
+
+        validator._validateNewGroupNotExists = function(data, result, next) {
+            var groupName = data.groupName;
+
+            // Validating only if user is trying to create new group instead of selecting the old one
+            if (data.group !== 'new') return next();
+
+            var groupRepository = require('../repository/group_repository');
+            groupRepository.exists(groupName, function(exists) {
+                if (!result.groupName && exists) result.groupName = ERR_GROUP_NAME_EXISTS;
                 next();
             });
         };
