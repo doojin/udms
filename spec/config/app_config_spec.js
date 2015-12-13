@@ -15,6 +15,7 @@ describe('app_config', function() {
 
         expect(express.static.calls.count()).toEqual(2);
         expect(express.static).toHaveBeenCalledWith('src/public/');
+        expect(express.static).toHaveBeenCalledWith('src/validator/')
     });
 
 });
