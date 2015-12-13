@@ -7,11 +7,14 @@ describe('validator/upsert_form_validator', function() {
     var next, data;
 
     beforeEach(function() {
-        spyOn(userRepository, 'IDExists').and.callFake(function(callback) {
+        spyOn(userRepository, 'IDExists').and.callFake(function(id, callback) {
             callback(false);
         });
-        spyOn(groupRepository, 'exists').and.callFake(function(callback) {
+        spyOn(groupRepository, 'exists').and.callFake(function(id, callback) {
             callback(false);
+        });
+        spyOn(groupRepository, 'IDExists').and.callFake(function(id, callback) {
+            callback(true);
         });
         next = jasmine.createSpy('next');
         data = {};
@@ -202,5 +205,41 @@ describe('validator/upsert_form_validator', function() {
         validator._validateNewGroupNotExists(data, null, next);
 
         expect(groupRepository.exists).not.toHaveBeenCalled();
+    });
+
+    it('_validateGroupExists should add error if group not exists', function() {
+        data.group = 'dummy group';
+        var result = { group: null };
+        groupRepository.IDExists.and.callFake(function(id, callback) {
+            callback(false);
+        });
+
+        validator._validateGroupExists(data, result, next);
+
+        expect(result.group).toEqual('Select correct user group');
+    });
+
+    it('_validateGroupExists should not override old error', function() {
+        data.group = 'dummy group';
+        var result = { group: 'dummy error' };
+        groupRepository.IDExists.and.callFake(function(id, callback) {
+            callback(false);
+        });
+
+        validator._validateGroupExists(data, result, next);
+
+        expect(result.group).toEqual('dummy error');
+    });
+
+    it('_validateGroupExists should not add error if group is new', function() {
+        data.group = 'new';
+        var result = { group: null };
+        groupRepository.IDExists.and.callFake(function(id, callback) {
+            callback(false);
+        });
+
+        validator._validateGroupExists(data, result, next);
+
+        expect(result.group).toBeNull();
     });
 });

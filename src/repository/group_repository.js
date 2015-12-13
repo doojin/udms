@@ -8,10 +8,17 @@ groupRepository.all = function(callback) {
 
 groupRepository.exists = function(groupName, callback) {
     var nameLowercase = groupName.toLowerCase();
-    Group.findOne({ nameLowercase: nameLowercase })
-        .then(function(group) {
-            callback(group !== null);
-        });
+    Group.findOne({ nameLowercase: nameLowercase }).then(function(group) {
+        callback(group !== null);
+    });
+};
+
+groupRepository.IDExists = function(groupID, callback) {
+    Group.findById(groupID).then(function(group) {
+        callback(group !== null);
+    }, function() {
+        callback(false);
+    })
 };
 
 module.exports = groupRepository;

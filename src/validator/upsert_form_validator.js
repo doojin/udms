@@ -11,6 +11,7 @@
     var ERR_WRONG_ROLE = 'Select correct user role';
     var ERR_GROUP_NAME_SYMBOLS = 'Group Name can consist of letter, number and dot symbols';
     var ERR_GROUP_NAME_EXISTS = 'Group with this name already exists';
+    var ERR_GROUP_WRONG = 'Select correct user group';
 
     var USER_ID_GROUP_NAME_PATTERN = /^[a-zA-Z0-9.]+$/;
 
@@ -98,8 +99,15 @@
 
             var async = require('async');
             async.waterfall([
-                function(callback) { self._validateUserNotExists(data, result, callback); },
-                function(callback) { self._validateNewGroupNotExists(data, result, callback); }
+                function(callback) {
+                    self._validateUserNotExists(data, result, callback);
+                },
+                function(callback) {
+                    self._validateNewGroupNotExists(data, result, callback);
+                },
+                function(callback) {
+                    self._validateGroupExists(data, result, callback);
+                }
 
             ], function() {
                 self._addStatus(result);
@@ -126,6 +134,19 @@
             var groupRepository = require('../repository/group_repository');
             groupRepository.exists(groupName, function(exists) {
                 if (!result.groupName && exists) result.groupName = ERR_GROUP_NAME_EXISTS;
+                next();
+            });
+        };
+
+        validator._validateGroupExists = function(data, result, next) {
+            var group = data.group;
+
+            // Validating only if user selected an old group instead of creating the new one
+            if (data.group === 'new') return next();
+
+            var groupRepository = require('../repository/group_repository');
+            groupRepository.IDExists(group, function(exists) {
+                if (!result.group && !exists) result.group = ERR_GROUP_WRONG;
                 next();
             });
         };
