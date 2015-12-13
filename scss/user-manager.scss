@@ -1,0 +1,14 @@
+.user-upsert {
+
+    .success {
+        @include radius;
+
+        background-color: #cbebc7;
+        border: solid 1px #9Dbf99;
+        color: #254d20;
+        margin-bottom: 1rem;
+        padding: 1rem;
+
+        .user-password { font-weight: bold; }
+    }
+}

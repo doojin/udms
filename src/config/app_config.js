@@ -1,5 +1,6 @@
 var express = require('express'),
-    globals = require('../globals');
+    globals = require('../globals'),
+    bodyParser = require('body-parser');
 
 var appConfig = {};
 
@@ -9,6 +10,8 @@ appConfig.setUp = function(app) {
     globals.STATIC_DIRS.forEach(function(dir) {
         app.use(express.static(dir))
     });
+
+    app.use(bodyParser.json());
 };
 
 module.exports = appConfig;

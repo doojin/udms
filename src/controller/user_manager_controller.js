@@ -4,7 +4,8 @@ var roleRequired = require('./middleware/role_required'),
     paginationRequired = require('./middleware/pagination_required'),
     userRepository = require('../repository/user_repository'),
     User = require('../repository/entity/user'),
-    mainScript = require('./middleware/main_script');
+    mainScript = require('./middleware/main_script'),
+    upsertFormValidator = require('../validator/upsert_form_validator');
 
 module.exports = {
     apply: function(app) {
@@ -14,6 +15,12 @@ module.exports = {
             paginationRequired(User, 'userPagination'),
             mainScript('user-manager'),
             getUserManager
+        );
+
+        app.post(
+            '/create-user',
+            roleRequired(Role.ADMINISTRATOR),
+            createUser
         )
     }
 };
@@ -29,4 +36,12 @@ function getUserManager(req, res) {
             users: JSON.stringify(users)
         });
     });
+}
+
+function createUser(req, res) {
+    var result = upsertFormValidator.validate(req.body);
+
+    if (result.success) result.password = 'dummypassword';
+
+    res.json(result);
 }

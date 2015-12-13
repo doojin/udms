@@ -2,12 +2,14 @@ define([
     'helper/jquery',
     'helper/slidable',
     'service/role_service',
-    'service/group_service'
+    'service/group_service',
+    'service/user_service'
 ], function(
     $,
     slidable,
     roleService,
-    groupService
+    groupService,
+    userService
 ) {
 
     function UserUpsertForm(selector) {
@@ -15,6 +17,7 @@ define([
         this._addGroupChangeListener();
         this._populateRoles();
         this._populateGroups();
+        this._addSubmitListener();
     }
 
     UserUpsertForm.prototype.bindNewUserEvent = function(trigSelector, trigEvent) {
@@ -28,7 +31,10 @@ define([
     UserUpsertForm.prototype._prepareNewUserForm = function() {
         this._getSubmitButton().removeClass('invisible');
         this._getUpdateButton().addClass('invisible');
+        this._getCancelButton().removeClass('invisible');
         this._clearForm();
+        this._hideSuccessMessage();
+        this._unlockForm();
     };
 
     UserUpsertForm.prototype._clearForm = function() {
@@ -42,6 +48,7 @@ define([
             .prop('selected', true)
             .change();
         this._getUserGroupNameInput().val('');
+        this._clearErrors();
     };
 
     UserUpsertForm.prototype._addGroupChangeListener = function() {
@@ -85,6 +92,87 @@ define([
                 self._getUserGroupSelect().append(option);
             });
         });
+    };
+
+    UserUpsertForm.prototype._addSubmitListener = function() {
+        var self = this;
+        this._getSubmitButton().on('click', function() {
+            self._clearErrors();
+            var formData = self._collectData();
+
+            userService.createUser(formData, function(result) {
+                if (result.success) {
+                    self._showSuccessMessage(result.password);
+                    self._lockForm();
+                    return;
+                }
+                self._showErrors(result);
+            });
+        });
+    };
+
+    UserUpsertForm.prototype._showSuccessMessage = function(password) {
+        this._getPasswordSpan().html(password);
+        this._getSuccessRow().removeClass('invisible');
+    };
+
+    UserUpsertForm.prototype._hideSuccessMessage = function() {
+        this._getPasswordSpan().html('');
+        this._getSuccessRow().addClass('invisible');
+    };
+
+    UserUpsertForm.prototype._lockForm = function() {
+        this._getUserIDInput().prop('disabled', true);
+        this._getUserGroupNameInput().prop('disabled', true);
+        this._getUserRoleSelect().prop('disabled', true);
+        this._getUserGroupSelect().prop('disabled', true);
+    };
+
+    UserUpsertForm.prototype._unlockForm = function() {
+        this._getUserIDInput().prop('disabled', false);
+        this._getUserGroupNameInput().prop('disabled', false);
+        this._getUserRoleSelect().prop('disabled', false);
+        this._getUserGroupSelect().prop('disabled', false);
+    };
+
+    UserUpsertForm.prototype._collectData = function() {
+        return {
+            ID: this._getUserIDInput().val(),
+            role: this._getUserRoleSelect().val(),
+            group: this._getUserGroupSelect().val(),
+            groupName: this._getUserGroupNameInput().val()
+        };
+    };
+
+    UserUpsertForm.prototype._showErrors = function(response) {
+        if (response.ID !== null) { this._addError(this._getUserIDInput(), response.ID); }
+        if (response.role !== null) { this._addError(this._getUserRoleSelect(), response.role); }
+        if (response.group !== null) { this._addError(this._getUserGroupSelect(), response.group); }
+        if (response.groupName !== null) { this._addError(this._getUserGroupNameInput(), response.groupName); }
+    };
+
+    UserUpsertForm.prototype._addError = function(element, error) {
+        var label = $(element).closest('label');
+
+        label.find('small.error').remove();
+        var errorLabel = $('<small>').addClass('error').html(error);
+        label.append(errorLabel);
+    };
+
+    UserUpsertForm.prototype._clearErrors = function() {
+        this._form.find('small.error').remove();
+    };
+
+    UserUpsertForm.prototype._getCancelButton = function() {
+        return this._form.find('.hide-slidable');
+    };
+
+    UserUpsertForm.prototype._getSuccessRow = function() {
+        return this._form.find('.success');
+    };
+
+    UserUpsertForm.prototype._getPasswordSpan = function() {
+        return this._form.find('.user-password');
     };
 
     UserUpsertForm.prototype._getUserIDInput = function() {
