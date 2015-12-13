@@ -1,6 +1,21 @@
-var validator = require('../../src/validator/upsert_form_validator');
+var validator = require('../../src/validator/upsert_form_validator'),
+    userRepository = require('../../src/repository/user_repository'),
+    groupRepository = require('../../src/repository/group_repository');
 
 describe('validator/upsert_form_validator', function() {
+
+    var next, data;
+
+    beforeEach(function() {
+        spyOn(userRepository, 'IDExists').and.callFake(function(callback) {
+            callback(false);
+        });
+        spyOn(groupRepository, 'exists').and.callFake(function(callback) {
+            callback(false);
+        });
+        next = jasmine.createSpy('next');
+        data = {};
+    });
 
     it('_validateUserID should return error if user ID is empty', function() {
         expect(validator._validateUserID('')).toEqual('This field is required');
@@ -91,4 +106,57 @@ describe('validator/upsert_form_validator', function() {
         expect(validator._validateGroupName('new', '123D56789.1234g6')).toBeNull();
     });
 
+    it('_validateUserNotExists should add error if user exists', function() {
+        userRepository.IDExists.and.callFake(function(id, callback) {
+            callback(true);
+        });
+        var result = { ID: null };
+
+        validator._validateUserNotExists(data, result, next);
+
+        expect(result.ID).toEqual('User with this ID already exists');
+    });
+
+    it('_validateUserNotExists should not add error if user ID already has error', function() {
+        userRepository.IDExists.and.callFake(function(id, callback) {
+            callback(true);
+        });
+        var result = { ID: 'dummy error' };
+
+        validator._validateUserNotExists(data, result, next);
+
+        expect(result.ID).toEqual('dummy error');
+    });
+
+    it('_validateUserNotExists should not add error if user not exists', function() {
+        userRepository.IDExists.and.callFake(function(id, callback) {
+            callback(false);
+        });
+        var result = { ID: null };
+
+        validator._validateUserNotExists(data, result, next);
+
+        expect(result.ID).toBeNull();
+    });
+
+    it('serverValidation should not continue validation if simple validation is not passed', function() {
+        var callback = jasmine.createSpy('callback');
+        spyOn(validator, 'validate').and.returnValue({ success: false });
+        spyOn(validator, '_validateUserNotExists');
+
+        validator.serverValidation(data, callback);
+
+        expect(callback).toHaveBeenCalledWith({ success: false });
+        expect(validator._validateUserNotExists).not.toHaveBeenCalled();
+    });
+
+    it('serverValidation should continue validation if simple validation is passed', function() {
+        var callback = jasmine.createSpy('callback');
+        spyOn(validator, 'validate').and.returnValue({ success: true });
+        spyOn(validator, '_validateUserNotExists');
+
+        validator.serverValidation(data, callback);
+
+        expect(validator._validateUserNotExists).toHaveBeenCalled();
+    });
 });

@@ -56,4 +56,12 @@ userRepository.save = function(user, callback) {
     return user.save(callback);
 };
 
+userRepository.IDExists = function(ID, callback) {
+    var userIDLowercase = ID.toLowerCase();
+    User.findOne({ userIDLowercase: userIDLowercase })
+        .then(function(user) {
+            callback(user !== null);
+        });
+};
+
 module.exports = userRepository;

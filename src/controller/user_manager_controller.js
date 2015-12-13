@@ -39,9 +39,8 @@ function getUserManager(req, res) {
 }
 
 function createUser(req, res) {
-    var result = upsertFormValidator.validate(req.body);
-
-    if (result.success) result.password = 'dummypassword';
-
-    res.json(result);
+    upsertFormValidator.serverValidation(req.body, function(result) {
+        if (result.success) result.password = 'dummypassword';
+        res.json(result);
+    });
 }

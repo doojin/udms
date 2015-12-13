@@ -1,11 +1,16 @@
 //noinspection ThisExpressionReferencesGlobalObjectJS
 (function() {
 
+    var nodeModule = false;
+    if (typeof module === 'object' && module && typeof module.exports === 'object') nodeModule = true;
+
     var ERR_FIELD_REQUIRED = 'This field is required';
     var ERR_FIELD_LENGTH = 'The value of this field must be {min}..{max} symbols';
     var ERR_USER_ID_SYMBOLS = 'User ID can consist of letter, number and dot symbols';
+    var ERR_USER_ID_EXISTS = 'User with this ID already exists';
     var ERR_WRONG_ROLE = 'Select correct user role';
     var ERR_GROUP_NAME_SYMBOLS = 'Group Name can consist of letter, number and dot symbols';
+    var ERR_GROUP_NAME_EXISTS = 'Group with this name already exists';
 
     var USER_ID_GROUP_NAME_PATTERN = /^[a-zA-Z0-9.]+$/;
 
@@ -83,7 +88,39 @@
         return error;
     };
 
-    if (typeof module === 'object' && module && typeof module.exports === 'object') {
+    if (nodeModule) {
+
+        validator.serverValidation = function(data, callback) {
+            var self = this;
+            var result = this.validate(data);
+
+            if (!result.success) return callback(result);
+
+            var async = require('async');
+            async.waterfall([
+
+                function(callback) {
+                    self._validateUserNotExists(data, result, function() {
+                        callback(data, result);
+                    });
+                }
+
+            ], function() {
+                self._addStatus(result);
+                callback(result);
+            });
+        };
+
+        validator._validateUserNotExists = function(data, result, next) {
+            var userID = data.ID;
+
+            var userRepository = require('../repository/user_repository');
+            userRepository.IDExists(userID, function(exists) {
+                if (!result.ID && exists) result.ID = ERR_USER_ID_EXISTS;
+                next();
+            });
+        };
+
         module.exports = validator;
         return;
     }

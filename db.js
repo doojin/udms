@@ -18,6 +18,19 @@ function deleteUsers() {
 }
 
 function addBaseUsers() {
+    securityService.encodePassword('x', function(password) {
+        var user = new User({
+            userID: 'Mister X',
+            userIDLowercase: 'xxxxx',
+            password: password,
+            role: Role.ADMINISTRATOR
+        });
+
+        userRepository.save(user, function() {
+            console.log('Mister X was created');
+        });
+    });
+
     // Administrator
     securityService.encodePassword('a', function(password) {
         var user = new User({
