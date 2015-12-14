@@ -32,8 +32,9 @@ define([
 
     UserUpsertForm.prototype._prepareNewUserForm = function() {
         this._getSubmitButton().removeClass('invisible');
-        this._getUpdateButton().addClass('invisible');
         this._getCancelButton().removeClass('invisible');
+        this._getUpdateButton().addClass('invisible');
+        this._getCloseButton().addClass('invisible');
         this._clearForm();
         this._hideSuccessMessage();
         this._unlockForm();
@@ -114,6 +115,10 @@ define([
                 if (result.success) {
                     self._showSuccessMessage(result.password);
                     self._lockForm();
+                    self._getCloseButton().removeClass('invisible');
+                    self._getSubmitButton().addClass('invisible');
+                    self._getCancelButton().addClass('invisible');
+                    self._getUpdateButton().addClass('invisible');
                     return;
                 }
                 self._showErrors(result);
@@ -174,7 +179,7 @@ define([
     };
 
     UserUpsertForm.prototype._getCancelButton = function() {
-        return this._form.find('.hide-slidable');
+        return this._form.find('.cancel');
     };
 
     UserUpsertForm.prototype._getSuccessRow = function() {
@@ -211,6 +216,10 @@ define([
 
     UserUpsertForm.prototype._getUpdateButton = function() {
         return this._form.find('.update');
+    };
+
+    UserUpsertForm.prototype._getCloseButton = function() {
+        return this._form.find('.close');
     };
 
     return UserUpsertForm;

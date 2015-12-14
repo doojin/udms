@@ -92,6 +92,18 @@ define([
             expect(updateButton.hasClass('invisible')).toBeTruthy();
         });
 
+        it('_prepareNewUserForm should make close button invisible', function() {
+            var closeButton = $('<div>').addClass('close');
+            var form = $('<div>').append(closeButton);
+            var upsertForm = new Form(form);
+
+            expect(closeButton.hasClass('invisible')).toBeFalsy();
+
+            upsertForm._prepareNewUserForm();
+
+            expect(closeButton.hasClass('invisible')).toBeTruthy();
+        });
+
         it('constructor should bind element to show form event', function() {
             var form = $('<div>');
             var upsertForm = new Form(form);
@@ -380,6 +392,38 @@ define([
             submitButton.click();
 
             expect(upsertForm._showErrors).toHaveBeenCalledWith({ success: false });
+        });
+
+        it('_addSubmitListener should hide all buttons BUT close button on success', function() {
+            var upsertForm = new Form();
+            var submitButton = $('<button>').addClass('submit');
+            var updateButton = $('<button>').addClass('update');
+            var closeButton = $('<button>').addClass('close').addClass('invisible');
+            var cancelButton = $('<button>').addClass('cancel');
+
+            upsertForm._form = $('<div>')
+                .append(submitButton)
+                .append(updateButton)
+                .append(closeButton)
+                .append(cancelButton);
+
+            userService.createUser.and.callFake(function(data, callback) {
+                callback({ success: true });
+            });
+            validator.validate.and.returnValue({ success: true });
+
+            expect(submitButton.hasClass('invisible')).toBeFalsy();
+            expect(updateButton.hasClass('invisible')).toBeFalsy();
+            expect(cancelButton.hasClass('invisible')).toBeFalsy();
+            expect(closeButton.hasClass('invisible')).toBeTruthy();
+
+            upsertForm._addSubmitListener();
+            submitButton.click();
+
+            expect(submitButton.hasClass('invisible')).toBeTruthy();
+            expect(updateButton.hasClass('invisible')).toBeTruthy();
+            expect(cancelButton.hasClass('invisible')).toBeTruthy();
+            expect(closeButton.hasClass('invisible')).toBeFalsy();
         });
 
         it('_showErrors should show errors for the fields which contain error', function() {
