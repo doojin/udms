@@ -21,4 +21,12 @@ describe('role_service', function() {
         expect(roleService.matches(role1, role2)).toBeFalsy();
     });
 
+    it('getRoleById should return role by it\'s it', function() {
+        expect(roleService.getRoleById(0)).toEqual(Role.UNAUTHORIZED);
+        expect(roleService.getRoleById(1)).toEqual(Role.AUTHORIZED);
+        expect(roleService.getRoleById(2)).toEqual(Role.STUDENT);
+        expect(roleService.getRoleById(3)).toEqual(Role.PROFESSOR);
+        expect(roleService.getRoleById(4)).toEqual(Role.ADMINISTRATOR);
+    });
+
 });

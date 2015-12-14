@@ -50,7 +50,7 @@ userRepository.updateActivity = function(id) {
 };
 
 userRepository.save = function(user, callback) {
-    if (user.group) {
+    if (user.group && user.group.save) {
         user.group.save();
     }
     return user.save(callback);
