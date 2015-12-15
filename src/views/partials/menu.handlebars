@@ -1,22 +1,33 @@
 {{#if ID}}
-<nav id="navigation-menu">
-    <ul>
-        <li>
-            <a href="/">
-                <i class="fi-home"></i>
-                <span>Homepage</span>
-            </a>
-        </li>
-        {{#if roles.administrator }}
+    <nav id="navigation-menu">
+        <ul>
+            <!-- Common links -->
             <li>
-                <a href="/user-manager">
-                    <i class="fi-torso"></i>
-                    <span>User Management</span>
+                <a href="/">
+                    <i class="fi-home"></i>
+                    <span>Homepage</span>
                 </a>
             </li>
-        {{/if}}
-    </ul>
-</nav>
+            <!-- Professor links -->
+            {{#if roles.professor }}
+                <li>
+                    <a href="/new-publication">
+                        <i class="fi-page-add"></i>
+                        <span>New Publication</span>
+                    </a>
+                </li>
+            {{/if}}
+            <!-- Administrator links -->
+            {{#if roles.administrator }}
+                <li>
+                    <a href="/user-manager">
+                        <i class="fi-torso"></i>
+                        <span>User Management</span>
+                    </a>
+                </li>
+            {{/if}}
+        </ul>
+    </nav>
 
-<img src="/img/menu.png" class="menu-icon">
+    <img src="/img/menu.png" class="menu-icon">
 {{/if}}

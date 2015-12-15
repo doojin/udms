@@ -1,0 +1,11 @@
+.new-publication {
+
+    label {
+        @media #{$large-up} {
+            @include form-label(inline, false);
+            @include form-label(right, false);
+        }
+    }
+
+    .sections { margin-top: 2rem; }
+}

@@ -2,7 +2,8 @@ var list = [
     require('./auth_controller'),
     require('./notification_controller'),
     require('./user_manager_controller'),
-    require('./group_controller')
+    require('./group_controller'),
+    require('./publication_controller')
 ];
 
 module.exports = {};
