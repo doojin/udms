@@ -1,14 +1,18 @@
 define([
     'helper/jquery',
     'common_logic',
-    'service/content_service'
+    'service/content_service',
+    'widget/publication_form'
 ], function(
     $,
     commonLogic,
-    contentService
+    contentService,
+    PublicationForm
 ) {
 
     commonLogic.initTinyMCEs(function() {
         contentService.showContent();
     });
+
+    new PublicationForm('.publication');
 });

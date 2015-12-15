@@ -12,7 +12,8 @@
             'tests': '../../../front-end-tests/',
             'jquery': 'vendor/jquery.min',
             'mmenu': 'https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/5.5.3/core/js/jquery.mmenu.min.all',
-            'validator': '../../validator'
+            'validator': '../../validator',
+            'tinyMCE': 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.3.2/tinymce.min'
         },
         shim: {
             'jasmine-html': {
@@ -25,6 +26,9 @@
             },
             'mmenu': {
                 deps: ['jquery']
+            },
+            'tinyMCE': {
+                exports: 'tinyMCE'
             }
         }
     });
@@ -44,7 +48,8 @@ define(['helper/jquery', 'boot'], function($) {
         'tests/service/role_service_test',
         'tests/service/time_service_test',
         'tests/widget/user_upsert_form_test',
-        'tests/service/content_service_test'
+        'tests/service/content_service_test',
+        'tests/widget/publication_form_test'
     ];
 
     require(tests, function() {

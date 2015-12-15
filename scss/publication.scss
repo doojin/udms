@@ -1,4 +1,4 @@
-.new-publication {
+.publication {
 
     label {
         @media #{$large-up} {
@@ -7,5 +7,7 @@
         }
     }
 
-    .sections { margin-top: 2rem; }
+    .sections > section {
+        margin-top: 2rem;
+    }
 }
