@@ -13,13 +13,20 @@ define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
         var self = this;
         this._newSectionButton().on('click', function() {
             self._addSection();
-        })
+        });
+        this._removeSectionButtons().on('click', function() {
+            self._parentSection(this).remove();
+        });
     };
 
     PublicationForm.prototype._addSection = function () {
         var newSection = this._buildSection();
         this._sections().append(newSection);
         this._initTinyMCE(this._sectionDescription(newSection));
+        var self = this;
+        this._removeSectionButton(newSection).on('click', function() {
+            self._parentSection(this).remove();
+        })
     };
 
     PublicationForm.prototype._initTinyMCE = function(textarea) {
@@ -106,6 +113,18 @@ define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
 
     PublicationForm.prototype._sectionDescription = function(section) {
         return section.find('.description');
+    };
+
+    PublicationForm.prototype._parentSection = function(child) {
+        return $(child).closest('.section');
+    };
+
+    PublicationForm.prototype._removeSectionButtons = function() {
+        return this._form.find('.remove-section');
+    };
+
+    PublicationForm.prototype._removeSectionButton = function(section) {
+        return $(section).find('.remove-section');
     };
 
     return PublicationForm;
