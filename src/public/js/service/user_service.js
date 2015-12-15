@@ -2,7 +2,7 @@ define(['helper/jquery'], function($) {
 
     var LOG_IN_URL = '/login';
     var LOG_OFF_URL = '/log-off';
-    var CREATE_USER_URL = '/create-user';
+    var UPDATE_INSERT_USER = '/update-insert-user';
 
     var userService = {};
 
@@ -36,9 +36,9 @@ define(['helper/jquery'], function($) {
         })
     };
 
-    userService.createUser = function(data, callback) {
+    userService.upsert = function(data, callback) {
         $.ajax({
-            url: CREATE_USER_URL,
+            url: UPDATE_INSERT_USER,
             data: JSON.stringify(data),
             type: 'post',
             contentType: 'application/json',

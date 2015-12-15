@@ -19,9 +19,9 @@ module.exports = {
         );
 
         app.post(
-            '/create-user',
+            '/update-insert-user',
             roleRequired(Role.ADMINISTRATOR),
-            createUser
+            upsert
         )
     }
 };
@@ -39,7 +39,7 @@ function getUserManager(req, res) {
     });
 }
 
-function createUser(req, res) {
+function upsert(req, res) {
     var data = req.body;
     upsertFormValidator.serverValidation(data, function(result) {
         if (result.success) {

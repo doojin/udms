@@ -33,11 +33,33 @@ define([
     UserUpsertForm.prototype._prepareNewUserForm = function() {
         this._getSubmitButton().removeClass('invisible');
         this._getCancelButton().removeClass('invisible');
-        this._getUpdateButton().addClass('invisible');
         this._getCloseButton().addClass('invisible');
+
         this._clearForm();
-        this._hideSuccessMessage();
+        this._hideSuccessMessages();
         this._unlockForm();
+    };
+
+    UserUpsertForm.prototype.showUpdateForm = function(userData) {
+        this._getSubmitButton().removeClass('invisible');
+        this._getCancelButton().removeClass('invisible');
+        this._getCloseButton().addClass('invisible');
+
+        this._clearForm();
+        this._hideSuccessMessages();
+        this._unlockForm();
+
+        this._fillForm(userData);
+
+        this._form.addClass('visible');
+    };
+
+    UserUpsertForm.prototype._fillForm = function(userData) {
+        this._getUserIDInput().val(userData.userID);
+        this._getUserRoleSelect().val(userData.role.ID).change();
+        this._getUserGroupSelect().val(userData.group._id).change();
+        this._getUserGroupNameInput().val('');
+        this._getIDInput().val(userData.ID);
     };
 
     UserUpsertForm.prototype._clearForm = function() {
@@ -50,6 +72,7 @@ define([
             .find('option:first-child')
             .prop('selected', true)
             .change();
+        this._getIDInput().val('');
         this._getUserGroupNameInput().val('');
         this._clearErrors();
     };
@@ -111,14 +134,14 @@ define([
             }
 
             // Back-end validation & processing
-            userService.createUser(formData, function(result) {
+            userService.upsert(formData, function(result) {
                 if (result.success) {
-                    self._showSuccessMessage(result.password);
+                    if (formData._id) self._showSuccessUpdateMessage();
+                    if (!formData._id) self._showSuccessMessage(result.password);
                     self._lockForm();
                     self._getCloseButton().removeClass('invisible');
                     self._getSubmitButton().addClass('invisible');
                     self._getCancelButton().addClass('invisible');
-                    self._getUpdateButton().addClass('invisible');
                     return;
                 }
                 self._showErrors(result);
@@ -126,14 +149,19 @@ define([
         });
     };
 
+    UserUpsertForm.prototype._showSuccessUpdateMessage = function() {
+        this._getSuccessUpdateRow().removeClass('invisible');
+    };
+
     UserUpsertForm.prototype._showSuccessMessage = function(password) {
         this._getPasswordSpan().html(password);
         this._getSuccessRow().removeClass('invisible');
     };
 
-    UserUpsertForm.prototype._hideSuccessMessage = function() {
+    UserUpsertForm.prototype._hideSuccessMessages = function() {
         this._getPasswordSpan().html('');
         this._getSuccessRow().addClass('invisible');
+        this._getSuccessUpdateRow().addClass('invisible');
     };
 
     UserUpsertForm.prototype._lockForm = function() {
@@ -155,7 +183,8 @@ define([
             ID: this._getUserIDInput().val(),
             role: this._getUserRoleSelect().val(),
             group: this._getUserGroupSelect().val(),
-            groupName: this._getUserGroupNameInput().val()
+            groupName: this._getUserGroupNameInput().val(),
+            _id: this._getIDInput().val()
         };
     };
 
@@ -183,7 +212,7 @@ define([
     };
 
     UserUpsertForm.prototype._getSuccessRow = function() {
-        return this._form.find('.success');
+        return this._form.find('.success.create');
     };
 
     UserUpsertForm.prototype._getPasswordSpan = function() {
@@ -214,12 +243,16 @@ define([
         return this._form.find('.submit');
     };
 
-    UserUpsertForm.prototype._getUpdateButton = function() {
-        return this._form.find('.update');
-    };
-
     UserUpsertForm.prototype._getCloseButton = function() {
         return this._form.find('.close');
+    };
+
+    UserUpsertForm.prototype._getIDInput = function() {
+        return this._form.find('._id');
+    };
+
+    UserUpsertForm.prototype._getSuccessUpdateRow = function() {
+        return this._form.find('.success.update');
     };
 
     return UserUpsertForm;

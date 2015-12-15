@@ -8,6 +8,7 @@
     var ERR_FIELD_LENGTH = 'The value of this field must be {min}..{max} symbols';
     var ERR_USER_ID_SYMBOLS = 'User ID can consist of letter, number and dot symbols';
     var ERR_USER_ID_EXISTS = 'User with this ID already exists';
+    var ERR_USER_ID_NOT_EXISTS = 'This user doesn\'t exist in database anymore';
     var ERR_WRONG_ROLE = 'Select correct user role';
     var ERR_GROUP_NAME_SYMBOLS = 'Group Name can consist of letter, number and dot symbols';
     var ERR_GROUP_NAME_EXISTS = 'Group with this name already exists';
@@ -103,6 +104,9 @@
                     self._validateUserNotExists(data, result, callback);
                 },
                 function(callback) {
+                    self._validateUserExists(data, result, callback);
+                },
+                function(callback) {
                     self._validateNewGroupNotExists(data, result, callback);
                 },
                 function(callback) {
@@ -116,11 +120,24 @@
         };
 
         validator._validateUserNotExists = function(data, result, next) {
+            // Validating only for new user creation
+            if (data._id) return next();
             var userID = data.ID;
 
             var userRepository = require('../repository/user_repository');
             userRepository.IDExists(userID, function(exists) {
                 if (!result.ID && exists) result.ID = ERR_USER_ID_EXISTS;
+                next();
+            });
+        };
+
+        validator._validateUserExists = function(data, result, next) {
+            // Only for user update
+            if (!data._id) return next();
+
+            var userRepository = require('../repository/user_repository');
+            userRepository.keyExists(data._id, function(exists) {
+                if (!result.ID && !exists) result.ID = ERR_USER_ID_NOT_EXISTS;
                 next();
             });
         };

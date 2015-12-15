@@ -64,4 +64,19 @@ userRepository.IDExists = function(ID, callback) {
         });
 };
 
+userRepository.keyExists = function(key, callback) {
+    User.findById(key).then(function(user) {
+        callback(user !== null);
+    }, function() {
+        callback(false);
+    })
+};
+
+userRepository.update = function(key, update, callback) {
+    if (update.group.save) update.group.save();
+    User.update({ _id: key }, update, function() {
+        callback();
+    });
+};
+
 module.exports = userRepository;

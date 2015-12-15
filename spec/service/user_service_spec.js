@@ -1,6 +1,5 @@
 var service = require('../../src/service/user_service'),
     userRepository = require('../../src/repository/user_repository'),
-    securityService = require('../../src/service/security_service'),
     roleService = require('../../src/service/role_service'),
     Role = require('../../src/model/role');
 
@@ -58,26 +57,19 @@ describe('service/user_service', function() {
         expect(service._updateUser).not.toHaveBeenCalled();
     });
 
-    it('_insertUser should create correct user model', function() {
-        spyOn(securityService, 'generatePassword').and.returnValue('clean password');
-        spyOn(securityService, 'encodePassword').and.callFake(function(password, callback) {
-            callback('dummy password');
-        });
+    it('_createUserModel should create correct user model', function() {
         spyOn(roleService, 'getRoleById').and.returnValue(Role.ADMINISTRATOR);
-        var callback = jasmine.createSpy('callback');
         var data = {
             ID: 'Dummy ID',
             role: '1',
             group: 'Dummy Group'
         };
 
-        service._insertUser(data, callback);
+        var result = service._createUserModel(data);
 
-        expect(callback).toHaveBeenCalledWith({
+        expect(result).toEqual({
             userID: 'Dummy ID',
             userIDLowercase: 'dummy id',
-            password: 'dummy password',
-            cleanPassword: 'clean password',
             role: Role.ADMINISTRATOR,
             group: 'Dummy Group'
         });

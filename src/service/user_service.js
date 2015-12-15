@@ -30,26 +30,33 @@ userService.upsert = function(data, callback) {
 
 userService._insertUser = function(data, callback) {
     var randomPassword = securityService.generatePassword();
+    var self = this;
     securityService.encodePassword(randomPassword, function(encodedPassword) {
-        var user = {
-            userID: data.ID,
-            userIDLowercase: data.ID.toLowerCase(),
-            password: encodedPassword,
-            cleanPassword: randomPassword,
-            role: roleService.getRoleById(data.role),
-            group: data.group === 'new' ? new Group({
-                name: data.groupName,
-                nameLowercase: data.groupName.toLowerCase()
-            }) : data.group
-        };
-
+        var user = self._createUserModel(data);
+        user.password = encodedPassword;
+        user.cleanPassword = randomPassword;
         userRepository.save(new User(user));
         callback(user);
     });
 };
 
-userService._updateUser = function(data) {
+userService._createUserModel = function(data) {
+    return user = {
+        userID: data.ID,
+        userIDLowercase: data.ID.toLowerCase(),
+        role: roleService.getRoleById(data.role),
+        group: data.group === 'new' ? new Group({
+            name: data.groupName,
+            nameLowercase: data.groupName.toLowerCase()
+        }) : data.group
+    };
+};
 
+userService._updateUser = function(data, callback) {
+    var userUpdate = this._createUserModel(data);
+    userRepository.update(data._id, userUpdate, function() {
+        callback(userUpdate);
+    })
 };
 
 module.exports = userService;

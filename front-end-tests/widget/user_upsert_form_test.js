@@ -20,7 +20,7 @@ define([
 
         beforeEach(function() {
             spyOn(groupService, 'groups').and.returnValue([]);
-            spyOn(userService, 'createUser');
+            spyOn(userService, 'upsert');
             spyOn(validator, 'validate').and.returnValue({ success: true });
         });
 
@@ -28,21 +28,31 @@ define([
             var userIDInput = $('<input>')
                 .addClass('user-id')
                 .val('dummy value');
+
             var userNewGroupInput = $('<input>')
                 .addClass('user-new-group')
                 .val('dummy value');
+
             var userRoleSelect = $('<select>')
                 .addClass('user-role')
                 .append($('<option>').val('1'))
                 .append($('<option>').val('dummy value').attr('selected', 'selected'));
+
             var userGroupSelect = $('<select>')
                 .addClass('user-group')
                 .append($('<option>').val('new'))
                 .append($('<option>').val('dummy value').attr('selected', 'selected'));
+
+            var IDInput = $('<input>')
+                .addClass('_id')
+                .val('dummy id');
+
             var form = $('<div>').append(userIDInput)
                 .append(userNewGroupInput)
                 .append(userRoleSelect)
-                .append(userGroupSelect);
+                .append(userGroupSelect)
+                .append(IDInput);
+
             var upsertForm = new Form();
             upsertForm._form = form;
 
@@ -50,6 +60,7 @@ define([
             expect(userNewGroupInput.val()).toEqual('dummy value');
             expect(userGroupSelect.val()).toEqual('dummy value');
             expect(userRoleSelect.val()).toEqual('dummy value');
+            expect(IDInput.val()).toEqual('dummy id');
 
             upsertForm._clearForm();
 
@@ -57,6 +68,7 @@ define([
             expect(userNewGroupInput.val()).toEqual('');
             expect(userGroupSelect.val()).toEqual('new');
             expect(userRoleSelect.val()).toEqual('1');
+            expect(IDInput.val()).toEqual('');
         });
 
         it('_clearForm should clear errors', function() {
@@ -78,18 +90,6 @@ define([
             upsertForm._prepareNewUserForm();
 
             expect(submitButton.hasClass('invisible')).toBeFalsy();
-        });
-
-        it('_prepareNewUserForm should make update button invisible', function() {
-            var updateButton = $('<div>').addClass('update');
-            var form = $('<div>').append(updateButton);
-            var upsertForm = new Form(form);
-
-            expect(updateButton.hasClass('invisible')).toBeFalsy();
-
-            upsertForm._prepareNewUserForm();
-
-            expect(updateButton.hasClass('invisible')).toBeTruthy();
         });
 
         it('_prepareNewUserForm should make close button invisible', function() {
@@ -192,7 +192,7 @@ define([
         });
 
         it('_collectData should collect form data', function() {
-            var IDInput = $('<input>').addClass('user-id').val('dummy id');
+            var userIDInput = $('<input>').addClass('user-id').val('dummy id');
 
             var roleSelect = $('<select>')
                 .addClass('user-role')
@@ -212,11 +212,16 @@ define([
                 .addClass('user-new-group')
                 .val('dummy group name');
 
+            var IDInput = $('<input>')
+                .addClass('_id')
+                .val('dummy id');
+
             var form = $('<div>')
-                .append(IDInput)
+                .append(userIDInput)
                 .append(roleSelect)
                 .append(groupSelect)
-                .append(groupNameInput);
+                .append(groupNameInput)
+                .append(IDInput);
 
             var upsertForm = new Form();
             upsertForm._form = form;
@@ -227,7 +232,8 @@ define([
                 ID: 'dummy id',
                 group: 'dummy group',
                 role: 'dummy role',
-                groupName: 'dummy group name'
+                groupName: 'dummy group name',
+                _id: 'dummy id'
             });
         });
 
@@ -236,6 +242,7 @@ define([
 
             var successRow = $('<div>')
                 .addClass('success')
+                .addClass('create')
                 .addClass('invisible')
                 .append(passwordSpan);
 
@@ -259,18 +266,27 @@ define([
 
             var successRow = $('<div>')
                 .addClass('success')
+                .addClass('create')
                 .append(passwordSpan);
 
+            var successUpdateRow = $('<div>')
+                .addClass('success')
+                .addClass('update');
+
             var upsertForm = new Form();
-            upsertForm._form = $('<div>').append(successRow);
+            upsertForm._form = $('<div>')
+                .append(successRow)
+                .append(successUpdateRow);
 
             expect(passwordSpan.html()).toEqual('dummy password');
             expect(successRow.hasClass('invisible')).toBeFalsy();
+            expect(successUpdateRow.hasClass('invisible')).toBeFalsy();
 
-            upsertForm._hideSuccessMessage();
+            upsertForm._hideSuccessMessages();
 
             expect(passwordSpan.html()).toEqual('');
             expect(successRow.hasClass('invisible')).toBeTruthy();
+            expect(successUpdateRow.hasClass('invisible')).toBeTruthy();
         });
 
         it('_lockForm should disable all inputs', function() {
@@ -359,7 +375,7 @@ define([
             var upsertForm = new Form();
             var submitButton = $('<button>').addClass('submit');
             upsertForm._form = $('<div>').append(submitButton);
-            userService.createUser.and.callFake(function(data, callback) {
+            userService.upsert.and.callFake(function(data, callback) {
                 callback({ success: true, password: 'dummy password' });
             });
             spyOn(upsertForm, '_showSuccessMessage');
@@ -380,7 +396,7 @@ define([
             var upsertForm = new Form();
             var submitButton = $('<button>').addClass('submit');
             upsertForm._form = $('<div>').append(submitButton);
-            userService.createUser.and.callFake(function(data, callback) {
+            userService.upsert.and.callFake(function(data, callback) {
                 callback({ success: false });
             });
             spyOn(upsertForm, '_showErrors');
@@ -397,23 +413,20 @@ define([
         it('_addSubmitListener should hide all buttons BUT close button on success', function() {
             var upsertForm = new Form();
             var submitButton = $('<button>').addClass('submit');
-            var updateButton = $('<button>').addClass('update');
             var closeButton = $('<button>').addClass('close').addClass('invisible');
             var cancelButton = $('<button>').addClass('cancel');
 
             upsertForm._form = $('<div>')
                 .append(submitButton)
-                .append(updateButton)
                 .append(closeButton)
                 .append(cancelButton);
 
-            userService.createUser.and.callFake(function(data, callback) {
+            userService.upsert.and.callFake(function(data, callback) {
                 callback({ success: true });
             });
             validator.validate.and.returnValue({ success: true });
 
             expect(submitButton.hasClass('invisible')).toBeFalsy();
-            expect(updateButton.hasClass('invisible')).toBeFalsy();
             expect(cancelButton.hasClass('invisible')).toBeFalsy();
             expect(closeButton.hasClass('invisible')).toBeTruthy();
 
@@ -421,7 +434,6 @@ define([
             submitButton.click();
 
             expect(submitButton.hasClass('invisible')).toBeTruthy();
-            expect(updateButton.hasClass('invisible')).toBeTruthy();
             expect(cancelButton.hasClass('invisible')).toBeTruthy();
             expect(closeButton.hasClass('invisible')).toBeFalsy();
         });
@@ -520,7 +532,7 @@ define([
             upsertForm._addSubmitListener();
             submitButton.click();
 
-            expect(userService.createUser).not.toHaveBeenCalled();
+            expect(userService.upsert).not.toHaveBeenCalled();
         });
 
         it('_addSubmitListener should process back-end validation if front-end validation is passed', function() {
@@ -532,7 +544,7 @@ define([
             upsertForm._addSubmitListener();
             submitButton.click();
 
-            expect(userService.createUser).toHaveBeenCalled();
+            expect(userService.upsert).toHaveBeenCalled();
         });
 
         it('_addSubmitListener should show errors if front-end validation is not passed', function() {
@@ -548,6 +560,103 @@ define([
             submitButton.click();
 
             expect(upsertForm._showErrors).toHaveBeenCalledWith({ success: false });
+        });
+
+        it('showUpdateForm should show form', function() {
+            var upsertForm = new Form();
+            var form = $('<div>');
+            upsertForm._form = form;
+            spyOn(upsertForm, '_fillForm');
+
+            expect(form.hasClass('visible')).toBeFalsy();
+
+            upsertForm.showUpdateForm();
+
+            expect(form.hasClass('visible')).toBeTruthy();
+        });
+
+        it('showUpdateForm should show only submit and cancel buttons', function() {
+            var upsertForm = new Form();
+            spyOn(upsertForm, '_fillForm');
+
+            var submitButton = $('<button>').addClass('invisible');
+            var cancelButton = $('<button>').addClass('invisible');
+            var closeButton = $('<button>');
+
+            spyOn(upsertForm, '_getSubmitButton').and.returnValue(submitButton);
+            spyOn(upsertForm, '_getCancelButton').and.returnValue(cancelButton);
+            spyOn(upsertForm, '_getCloseButton').and.returnValue(closeButton);
+
+            expect(submitButton.hasClass('invisible')).toBeTruthy();
+            expect(cancelButton.hasClass('invisible')).toBeTruthy();
+            expect(closeButton.hasClass('invisible')).toBeFalsy();
+
+            upsertForm.showUpdateForm();
+
+            expect(submitButton.hasClass('invisible')).toBeFalsy();
+            expect(cancelButton.hasClass('invisible')).toBeFalsy();
+            expect(closeButton.hasClass('invisible')).toBeTruthy();
+        });
+
+        it('_fillForm should fill upsert form with user data', function() {
+            var upsertForm = new Form();
+
+            var IDInput = $('<input>');
+
+            var userIDInput = $('<input>');
+
+            var roleOption1 = $('<option>').val('dummy role');
+            var roleOption2 = $('<option>').val('another role');
+            var userRoleSelect = $('<select>')
+                .append(roleOption1)
+                .append(roleOption2);
+
+            var groupOption1 = $('<option>').val('dummy group');
+            var groupOption2 = $('<option>').val('another group');
+            var userGroupSelect = $('<select>')
+                .append(groupOption1)
+                .append(groupOption2);
+
+            var groupNameInput = $('<input>').val('dummy group name');
+
+            spyOn(upsertForm, '_getIDInput').and.returnValue(IDInput);
+            spyOn(upsertForm, '_getUserIDInput').and.returnValue(userIDInput);
+            spyOn(upsertForm, '_getUserRoleSelect').and.returnValue(userRoleSelect);
+            spyOn(upsertForm, '_getUserGroupSelect').and.returnValue(userGroupSelect);
+            spyOn(upsertForm, '_getUserGroupNameInput').and.returnValue(groupNameInput);
+
+            var user = {
+                ID: 'dummy id',
+                userID: 'dummy user id',
+                role: { ID: 'another role' },
+                group: { _id: 'another group' }
+            };
+
+            expect(IDInput.val()).toEqual('');
+            expect(userIDInput.val()).toEqual('');
+            expect(userRoleSelect.val()).toEqual('dummy role');
+            expect(userGroupSelect.val()).toEqual('dummy group');
+            expect(groupNameInput.val()).toEqual('dummy group name');
+
+            upsertForm._fillForm(user);
+
+            expect(IDInput.val()).toEqual('dummy id');
+            expect(userIDInput.val()).toEqual('dummy user id');
+            expect(userRoleSelect.val()).toEqual('another role');
+            expect(userGroupSelect.val()).toEqual('another group');
+            expect(groupNameInput.val()).toEqual('');
+        });
+
+        it('_showSuccessUpdateMessage should show success message', function() {
+            var upsertForm = new Form();
+            var successRow = $('<div>').addClass('invisible');
+            spyOn(upsertForm, '_getSuccessUpdateRow').and.returnValue(successRow);
+
+            expect(successRow.hasClass('invisible')).toBeTruthy();
+
+            upsertForm._showSuccessUpdateMessage();
+
+            expect(successRow.hasClass('invisible')).toBeFalsy();
         });
     });
 

@@ -1,4 +1,5 @@
 <dialog open class="small-12 medium-5 columns user-upsert slidable">
+    <input type="hidden" class="_id">
     <div class="row">
         <div class="small-12 columns">
             <label>
@@ -21,9 +22,6 @@
                 User Group:
                 <select class="user-group">
                     <option value="new">New Group</option>
-                    <option value="dummy group 1">Dummy Group 1</option>
-                    <option value="dummy group 2">Dummy Group 2</option>
-                    <option value="dummy group 3">Dummy Group 3</option>
                 </select>
             </label>
         </div>
@@ -36,15 +34,19 @@
             </label>
         </div>
     </div>
-    <div class="invisible success row">
+    <div class="invisible success create row">
         <div class="small-12 text-center columns">
             New user was created. Generated password: <span class="user-password"></span>
+        </div>
+    </div>
+    <div class="invisible success update row">
+        <div class="small-12 text-center columns">
+            User data was updated
         </div>
     </div>
     <div class="row">
         <div class="small-12 text-center columns">
             <div class="small tiny radius submit button">OK</div>
-            <div class="small tiny radius update button">OK</div>
             <div class="small tiny radius cancel hide-slidable button">Cancel</div>
             <div class="small tiny radius close hide-slidable button">Close</div>
         </div>

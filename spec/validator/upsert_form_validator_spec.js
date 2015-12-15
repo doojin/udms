@@ -142,6 +142,15 @@ describe('validator/upsert_form_validator', function() {
         expect(result.ID).toBeNull();
     });
 
+    it('_validateUserNotExists should skip validation if _id is set', function() {
+        data._id = 5;
+        var result = { ID: null };
+
+        validator._validateUserNotExists(data, result, next);
+
+        expect(userRepository.IDExists).not.toHaveBeenCalled();
+    });
+
     it('serverValidation should not continue validation if simple validation is not passed', function() {
         var callback = jasmine.createSpy('callback');
         spyOn(validator, 'validate').and.returnValue({ success: false });
@@ -241,5 +250,50 @@ describe('validator/upsert_form_validator', function() {
         validator._validateGroupExists(data, result, next);
 
         expect(result.group).toBeNull();
+    });
+
+    it('_validateUserExists should add error if user not exists', function() {
+        spyOn(userRepository, 'keyExists').and.callFake(function(id, callback) {
+            callback(false);
+        });
+        data._id = 5;
+        var result = { ID: null };
+
+        validator._validateUserExists(data, result, next);
+
+        expect(result.ID).toEqual('This user doesn\'t exist in database anymore');
+    });
+
+    it('_validateUserExists should not add error if user exists', function() {
+        spyOn(userRepository, 'keyExists').and.callFake(function(id, callback) {
+            callback(true);
+        });
+        data._id = 5;
+        var result = { ID: null };
+
+        validator._validateUserExists(data, result, next);
+
+        expect(result.ID).toBeNull();
+    });
+
+    it('_validateUserExists should not override old error', function() {
+        spyOn(userRepository, 'keyExists').and.callFake(function(id, callback) {
+            callback(false);
+        });
+        data._id = 5;
+        var result = { ID: 'old error' };
+
+        validator._validateUserExists(data, result, next);
+
+        expect(result.ID).toEqual('old error');
+    });
+
+    it('_validateUserExists should skip validation if _id is not set', function() {
+        spyOn(userRepository, 'keyExists');
+        var result = { ID: null };
+
+        validator._validateUserExists(data, result, next);
+
+        expect(userRepository.keyExists).not.toHaveBeenCalled();
     });
 });
