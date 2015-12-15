@@ -1,10 +1,14 @@
 define([
     'helper/jquery',
-    'common_logic'
+    'common_logic',
+    'service/content_service'
 ], function(
     $,
-    commonLogic
+    commonLogic,
+    contentService
 ) {
 
-    commonLogic.initTinyMCEs();
+    commonLogic.initTinyMCEs(function() {
+        contentService.showContent();
+    });
 });

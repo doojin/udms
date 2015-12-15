@@ -3,12 +3,14 @@ define([
     'render/user_table_render',
     'widget/user_upsert_form',
     'helper/jquery',
+    'service/content_service',
     'common_logic'
 ], function(
     Table,
     userTableRender,
     UserUpsertForm,
-    $
+    $,
+    contentService
 ) {
 
     var userTableWrapper = $('#user-list'),
@@ -28,4 +30,6 @@ define([
         form.showUpdateForm(data);
     };
     userTableWrapper.append(userTable.build());
+
+    contentService.showContent();
 });

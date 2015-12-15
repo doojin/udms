@@ -43,7 +43,8 @@ define(['helper/jquery', 'boot'], function($) {
         'tests/render/user_table_render_test',
         'tests/service/role_service_test',
         'tests/service/time_service_test',
-        'tests/widget/user_upsert_form_test'
+        'tests/widget/user_upsert_form_test',
+        'tests/service/content_service_test'
     ];
 
     require(tests, function() {
