@@ -9,6 +9,27 @@ define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
         this._addHandlers();
     }
 
+    PublicationForm.prototype.data = function() {
+        tinyMCE.triggerSave();
+
+        var data = {
+            name: this._publicationName().val(),
+            description: this._publicationDescription().val()
+        };
+
+        var self = this;
+        var sections = [];
+        this._sections().find('.section').each(function() {
+            sections.push({
+                title: self._sectionTitle(this).val(),
+                description: self._sectionDescription(this).val()
+            });
+        });
+        data.sections = sections;
+
+        return data;
+    };
+
     PublicationForm.prototype._addHandlers = function() {
         var self = this;
         this._newSectionButton().on('click', function() {
@@ -22,7 +43,8 @@ define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
     PublicationForm.prototype._addSection = function () {
         var newSection = this._buildSection();
         this._sections().append(newSection);
-        this._initTinyMCE(this._sectionDescription(newSection));
+        var textarea = this._sectionDescription(newSection);
+        this._initTinyMCE(textarea);
     };
 
     PublicationForm.prototype._initTinyMCE = function(textarea) {
@@ -108,11 +130,23 @@ define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
     };
 
     PublicationForm.prototype._sectionDescription = function(section) {
-        return section.find('.description');
+        return $(section).find('.description');
+    };
+
+    PublicationForm.prototype._sectionTitle = function(section) {
+        return $(section).find('.title');
     };
 
     PublicationForm.prototype._parentSection = function(child) {
         return $(child).closest('.section');
+    };
+
+    PublicationForm.prototype._publicationName = function() {
+        return this._form.find('.publication-name');
+    };
+
+    PublicationForm.prototype._publicationDescription = function() {
+        return this._form.find('.publication-description');
     };
 
     return PublicationForm;

@@ -1,5 +1,5 @@
 var roleRequired = require('./middleware/role_required'),
-    mainScript = require('./middleware/main_script');
+    mainScript = require('./middleware/main_script'),
     Role = require('../model/role');
 
 var NEW_PUBLICATION_URL = '/new-publication';
