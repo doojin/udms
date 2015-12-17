@@ -49,7 +49,8 @@ define(['helper/jquery', 'boot'], function($) {
         'tests/service/time_service_test',
         'tests/widget/user_upsert_form_test',
         'tests/service/content_service_test',
-        'tests/widget/publication_form_test'
+        'tests/widget/publication_form_test',
+        'tests/widget/list_test'
     ];
 
     require(tests, function() {
