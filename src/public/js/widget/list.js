@@ -18,6 +18,13 @@ define(['helper/jquery'], function($) {
         this._root.append(itemHTML);
     };
 
+    List.prototype.remove = function(item) {
+        this._items = this._items.filter(function(currItem) {
+            return(currItem.ID != item.ID);
+        });
+        this._root.find('li[data-id="' + item.ID + '"]').remove();
+    };
+
     List.prototype._addClickHandler = function(item, itemHTML) {
         var self = this;
         $(itemHTML).on('click', function() {

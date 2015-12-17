@@ -56,6 +56,38 @@ define(['helper/jquery', 'widget/list'], function($, List) {
             expect(list._items[0]).toEqual(item);
         });
 
+        it('remove should remove item from _items list', function() {
+            var item1 = new List.Item();
+            var item2 = new List.Item();
+            var item3 = new List.Item();
+
+            var list = new List();
+
+            list.add(item1);
+            list.add(item2);
+            list.add(item3);
+
+            expect(list._items).toEqual([item1, item2, item3]);
+
+            list.remove(item2);
+
+            expect(list._items).toEqual([item1, item3]);
+        });
+
+        it('remove should remove item from HTML output', function() {
+            List.Item.ID = 0;
+            var item = new List.Item();
+
+            var list = new List();
+            list.add(item);
+
+            expect(list._root.find('li').length).toEqual(1);
+
+            list.remove(item);
+
+            expect(list._root.find('li').length).toEqual(0);
+        });
+
     });
 
 });
