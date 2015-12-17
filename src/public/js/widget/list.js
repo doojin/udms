@@ -25,6 +25,10 @@ define(['helper/jquery'], function($) {
         this._root.find('li[data-id="' + item.ID + '"]').remove();
     };
 
+    List.prototype.toHTML = function() {
+        return this._root;
+    };
+
     List.prototype._addClickHandler = function(item, itemHTML) {
         var self = this;
         $(itemHTML).on('click', function() {
