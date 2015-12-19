@@ -1,4 +1,4 @@
-define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
+define(['helper/jquery', 'tinyMCE', 'widget/list'], function($, tinyMCE, List) {
 
     var REMOVE_SECTION_BUTTON_TEXT = 'Remove this section';
 
@@ -7,6 +7,8 @@ define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
     function PublicationForm(selector) {
         this._form = $(selector);
         this._addHandlers();
+
+        this._initMemberWidgets();
     }
 
     PublicationForm.prototype.data = function() {
@@ -118,8 +120,46 @@ define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
             .append(removeButtonRow)
             .append(sectionTitleRow)
             .append(sectionDescriptionRow);
+    };
 
-    } ;
+    PublicationForm.prototype._initMemberWidgets = function() {
+        var studentList = new List();
+        studentList.title('Students');
+        for (var i = 0; i < 8; i++) {
+            studentList.add(new List.Item('Student' + i, {}));
+        }
+
+        var groupList = new List();
+        groupList.title('Groups');
+        for (i = 0; i < 15; i++) {
+            groupList.add(new List.Item('Group' + i, {}));
+        }
+
+        var memberList = new List();
+        memberList.title('Result');
+
+        studentList.appendTo(this._studentsDiv());
+        groupList.appendTo(this._groupsDiv());
+        memberList.appendTo(this._membersDiv());
+
+        studentList.onClick = function(item) {
+            item.type = 'student';
+            studentList.remove(item);
+            memberList.add(item);
+        };
+
+        groupList.onClick = function(item) {
+            item.type = 'group';
+            groupList.remove(item);
+            memberList.add(item);
+        };
+
+        memberList.onClick = function(item) {
+            memberList.remove(item);
+            if (item.type === 'student') return studentList.add(item);
+            groupList.add(item);
+        };
+    };
 
     PublicationForm.prototype._newSectionButton = function() {
         return this._form.find('.add-section');
@@ -147,6 +187,18 @@ define(['helper/jquery', 'tinyMCE'], function($, tinyMCE) {
 
     PublicationForm.prototype._publicationDescription = function() {
         return this._form.find('.publication-description');
+    };
+
+    PublicationForm.prototype._studentsDiv = function() {
+        return this._form.find('.students.columns');
+    };
+
+    PublicationForm.prototype._groupsDiv = function() {
+        return this._form.find('.groups.columns');
+    };
+
+    PublicationForm.prototype._membersDiv = function() {
+        return this._form.find('.members.columns');
     };
 
     return PublicationForm;

@@ -1,0 +1,39 @@
+.item-list {
+    background-color: #ccc;
+    border: solid 1px #ccc;
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    max-height: 200px;
+    padding: 0;
+    position: relative;
+
+    li {
+        background-color: #eee;
+        cursor: pointer;
+        font-size: 0.875rem;
+        padding: 5px 20px;
+
+        &:not(:last-child) { margin-bottom: 1px; }
+
+        &:hover { background-color: #ddd; }
+    }
+
+    &.empty:after {
+        background-color: #f9f9f9;
+        color: #666;
+        content: 'The list is empty';
+        display: block;
+        font-size: 0.8rem;
+        font-style: italic;
+        padding: 5px;
+        text-align: center;
+    }
+
+    .title {
+        background-color: #ddd;
+        border-bottom: solid 1px #ccc;
+        padding: 5px;
+        text-align: center;
+    }
+}

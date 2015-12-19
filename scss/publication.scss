@@ -10,4 +10,9 @@
     .sections > section {
         margin-top: 2rem;
     }
+
+    $members-margin: 15px;
+    .groups { margin-top: $members-margin; }
+    .groups { @media #{$large} { margin-top: 0; } }
+    .members.row { margin-top: $members-margin; }
 }

@@ -1,4 +1,4 @@
-define(['helper/jquery'], function($) {
+define(['helper/jquery', 'scrollbar'], function($) {
 
     /* List ---------------------------------------------*/
 
@@ -6,7 +6,11 @@ define(['helper/jquery'], function($) {
         this.onClick = function() {};
 
         this._items = [];
-        this._root = $('<ul>').addClass('item-list');
+        this._root = $('<ul>')
+            .addClass('item-list')
+            .addClass('empty');
+        //noinspection JSUnresolvedFunction
+        this._root.perfectScrollbar();
     }
 
     List.prototype.add = function(item) {
@@ -16,6 +20,9 @@ define(['helper/jquery'], function($) {
         var itemHTML = item.toHTML();
         this._addClickHandler(item, itemHTML);
         this._root.append(itemHTML);
+        this._showHideEmptyLabel();
+        //noinspection JSUnresolvedFunction
+        this._root.perfectScrollbar('update');
     };
 
     List.prototype.remove = function(item) {
@@ -23,10 +30,29 @@ define(['helper/jquery'], function($) {
             return(currItem.ID != item.ID);
         });
         this._root.find('li[data-id="' + item.ID + '"]').remove();
+        this._showHideEmptyLabel();
+        //noinspection JSUnresolvedFunction
+        this._root.perfectScrollbar('update');
     };
 
-    List.prototype.toHTML = function() {
-        return this._root;
+    List.prototype.appendTo = function(element) {
+        $(element).append(this._root);
+        this._root.scrollTop(1).scrollTop(0);
+    };
+
+    List.prototype.item = function(ID) {
+        var matches = this._items.filter(function(item) {
+            return item.ID == ID;
+        });
+        return matches.length === 0 ? null : matches[0];
+    };
+
+    List.prototype.title = function(title) {
+        this._titleDiv().remove();
+        var titleDiv = $('<div>')
+            .addClass('title')
+            .html(title);
+        this._root.prepend(titleDiv);
     };
 
     List.prototype._addClickHandler = function(item, itemHTML) {
@@ -34,6 +60,18 @@ define(['helper/jquery'], function($) {
         $(itemHTML).on('click', function() {
             self.onClick(item);
         });
+    };
+
+    List.prototype._showHideEmptyLabel = function() {
+        if (this._items.length === 0) {
+            this._root.addClass('empty');
+            return;
+        }
+        this._root.removeClass('empty');
+    };
+
+    List.prototype._titleDiv = function() {
+        return this._root.find('.title');
     };
 
     /* List.Item -----------------------------------------*/

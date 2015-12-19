@@ -88,6 +88,51 @@ define(['helper/jquery', 'widget/list'], function($, List) {
             expect(list._root.find('li').length).toEqual(0);
         });
 
+        it('item should return item by it\'s id', function() {
+            var list = new List();
+            var item1 = { ID: 'item1' },
+                item2 = { ID: 'item2' },
+                item3 = { ID: 'item3' };
+            list._items = [ item1, item2, item3 ];
+
+            expect(list.item('item1')).toEqual(item1);
+            expect(list.item('item2')).toEqual(item2);
+            expect(list.item('item3')).toEqual(item3);
+            expect(list.item('item4')).toBeNull();
+        });
+
+        it('title should add title div after removing existing', function() {
+            var list = new List();
+            var titleDiv1 = $('<div>').addClass('title');
+            var titleDiv2 = $('<div>').addClass('title');
+            list._root
+                .append(titleDiv1)
+                .append(titleDiv2);
+
+            expect(list._root.find('.title').length).toEqual(2);
+
+            list.title('Dummy title');
+
+            expect(list._root.find('.title').length).toEqual(1);
+            expect(list._root.find('.title').html()).toEqual('Dummy title');
+        });
+
+        it('_showHideEmptyLabel should append "empty" class if no items exist and remove class if exist', function() {
+            var list = new List();
+
+            expect(list._root.hasClass('empty')).toBeTruthy();
+
+            list._items.push('dummy item');
+            list._showHideEmptyLabel();
+
+            expect(list._root.hasClass('empty')).toBeFalsy();
+
+            list._items = [];
+            list._showHideEmptyLabel();
+
+            expect(list._root.hasClass('empty')).toBeTruthy();
+        });
+
     });
 
 });
