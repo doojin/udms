@@ -9,6 +9,8 @@ define(['helper/jquery', 'tinyMCE', 'widget/list'], function($, tinyMCE, List) {
         this._addHandlers();
 
         this._initMemberWidgets();
+
+        this.onSubmit = function() {};
     }
 
     PublicationForm.prototype.data = function() {
@@ -16,7 +18,8 @@ define(['helper/jquery', 'tinyMCE', 'widget/list'], function($, tinyMCE, List) {
 
         var data = {
             name: this._publicationName().val(),
-            description: this._publicationDescription().val()
+            description: this._publicationDescription().val(),
+            members: this._memberList.data()
         };
 
         var self = this;
@@ -39,6 +42,10 @@ define(['helper/jquery', 'tinyMCE', 'widget/list'], function($, tinyMCE, List) {
         });
         this._sections().on('click', '.remove-section', function() {
             self._parentSection(this).remove();
+        });
+        this._submitButton().on('click', function() {
+            var data = self.data();
+            self.onSubmit(data);
         });
     };
 
@@ -159,6 +166,8 @@ define(['helper/jquery', 'tinyMCE', 'widget/list'], function($, tinyMCE, List) {
             if (item.type === 'student') return studentList.add(item);
             groupList.add(item);
         };
+
+        this._memberList = memberList;
     };
 
     PublicationForm.prototype._newSectionButton = function() {
@@ -201,6 +210,9 @@ define(['helper/jquery', 'tinyMCE', 'widget/list'], function($, tinyMCE, List) {
         return this._form.find('.members.columns');
     };
 
+    PublicationForm.prototype._submitButton = function() {
+        return this._form.find('.submit');
+    };
     return PublicationForm;
 
 });

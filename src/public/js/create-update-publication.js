@@ -14,5 +14,8 @@ define([
         contentService.showContent();
     });
 
-    new PublicationForm('.publication');
+    var publicationForm = new PublicationForm('.publication');
+    publicationForm.onSubmit = function(data) {
+        console.log(data);
+    };
 });

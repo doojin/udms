@@ -133,6 +133,22 @@ define(['helper/jquery', 'widget/list'], function($, List) {
             expect(list._root.hasClass('empty')).toBeTruthy();
         });
 
+        it('data should return list data', function() {
+            var list = new List();
+            var item1 = { ID: 'item1', dummyKey: 'dummy value 1'},
+                item2 = { ID: 'item2', dummyKey: 'dummy value 2'},
+                item3 = { ID: 'item3', dummyKey: 'dummy value 3'};
+            list._items = [ item1, item2, item3 ];
+
+            var result = list.data();
+
+            expect(result).toEqual([
+                { dummyKey: 'dummy value 1' },
+                { dummyKey: 'dummy value 2' },
+                { dummyKey: 'dummy value 3' }
+            ]);
+        });
+
     });
 
 });

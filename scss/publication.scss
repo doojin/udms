@@ -15,4 +15,6 @@
     .groups { margin-top: $members-margin; }
     .groups { @media #{$large} { margin-top: 0; } }
     .members.row { margin-top: $members-margin; }
+
+    .submit { margin-top: 30px; }
 }

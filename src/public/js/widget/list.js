@@ -13,6 +13,19 @@ define(['helper/jquery', 'scrollbar'], function($) {
         this._root.perfectScrollbar();
     }
 
+    List.prototype.data = function() {
+        var result = [];
+        this._items.forEach(function(item) {
+            var res = {};
+            Object.keys(item).forEach(function(key) {
+                if (key === 'ID') return;
+                res[key] = item[key];
+            });
+            result.push(res);
+        });
+        return result;
+    };
+
     List.prototype.add = function(item) {
         item.ID = List.Item.ID++;
         this._items.push(item);
