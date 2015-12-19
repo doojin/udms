@@ -46,6 +46,20 @@ define(['helper/jquery'], function($) {
         })
     };
 
+    userService.students = function(callback) {
+        callback([
+            { userID: 'User 1' },
+            { userID: 'User 2' },
+            { userID: 'User 3' },
+            { userID: 'User 4' },
+            { userID: 'User 5' },
+            { userID: 'User 6' },
+            { userID: 'User 7' },
+            { userID: 'User 8' },
+            { userID: 'User 9' }
+        ]);
+    };
+
     return userService;
 
 });

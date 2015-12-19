@@ -1,6 +1,20 @@
-define(['helper/jquery', 'widget/publication_form', 'widget/list'], function($, PublicationForm, List) {
+define([
+    'helper/jquery',
+    'widget/publication_form',
+    'widget/list',
+    'service/group_service'
+], function(
+    $,
+    PublicationForm,
+    List,
+    groupService
+) {
 
     describe('widget/publication_form', function() {
+
+        beforeEach(function() {
+            spyOn(groupService, 'groups');
+        });
 
         it('_addSection should add new section to the form', function() {
             var form = new PublicationForm();
@@ -68,6 +82,13 @@ define(['helper/jquery', 'widget/publication_form', 'widget/list'], function($, 
         });
 
         it('_initMemberWidgets should add click handlers for list widgets', function() {
+            groupService.groups.and.callFake(function(callback) {
+                callback([
+                    { name: 'Group 1' },
+                    { name: 'Group 2' }
+                ]);
+            });
+
             var form = new PublicationForm();
 
             var studentDiv = $('<div>');
@@ -83,29 +104,29 @@ define(['helper/jquery', 'widget/publication_form', 'widget/list'], function($, 
 
             form._initMemberWidgets();
 
-            expect(getFirst(studentDiv).html()).toEqual('Student0');
+            expect(getFirst(studentDiv).html()).toEqual('User 1');
 
             getFirst(studentDiv).click();
 
-            expect(getFirst(studentDiv).html()).toEqual('Student1');
-            expect(getLast(memberDiv).html()).toEqual('Student0');
+            expect(getFirst(studentDiv).html()).toEqual('User 2');
+            expect(getLast(memberDiv).html()).toEqual('User 1');
 
             getLast(memberDiv).click();
 
             expect(getLast(memberDiv).html()).toEqual(undefined);
-            expect(getLast(studentDiv).html()).toEqual('Student0');
+            expect(getLast(studentDiv).html()).toEqual('User 1');
 
-            expect(getFirst(groupDiv).html()).toEqual('Group0');
+            expect(getFirst(groupDiv).html()).toEqual('Group 1');
 
             getFirst(groupDiv).click();
 
-            expect(getFirst(groupDiv).html()).toEqual('Group1');
-            expect(getLast(memberDiv).html()).toEqual('Group0');
+            expect(getFirst(groupDiv).html()).toEqual('Group 2');
+            expect(getLast(memberDiv).html()).toEqual('Group 1');
 
             getLast(memberDiv).click();
 
             expect(getLast(memberDiv).html()).toEqual(undefined);
-            expect(getLast(groupDiv).html()).toEqual('Group0');
+            expect(getLast(groupDiv).html()).toEqual('Group 1');
         });
 
         it('data should collect form data', function() {

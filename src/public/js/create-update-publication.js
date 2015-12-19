@@ -10,12 +10,15 @@ define([
     PublicationForm
 ) {
 
-    commonLogic.initTinyMCEs(function() {
-        contentService.showContent();
-    });
-
     var publicationForm = new PublicationForm('.publication');
     publicationForm.onSubmit = function(data) {
-        console.log(data);
+        // Process data
     };
+
+    publicationForm.onDataLoad = function() {
+        commonLogic.initTinyMCEs(function() {
+            contentService.showContent();
+        });
+    };
+
 });

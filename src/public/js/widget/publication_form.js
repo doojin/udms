@@ -1,16 +1,29 @@
-define(['helper/jquery', 'tinyMCE', 'widget/list'], function($, tinyMCE, List) {
+define([
+    'helper/jquery',
+    'tinyMCE',
+    'widget/list',
+    'service/group_service',
+    'service/user_service'
+], function(
+    $,
+    tinyMCE,
+    List,
+    groupService,
+    userService
+) {
 
     var REMOVE_SECTION_BUTTON_TEXT = 'Remove this section';
 
     var newTextAreasCount = 0;
 
     function PublicationForm(selector) {
+        this.onSubmit = function() {};
+        this.onDataLoad = function() {};
+
         this._form = $(selector);
         this._addHandlers();
 
         this._initMemberWidgets();
-
-        this.onSubmit = function() {};
     }
 
     PublicationForm.prototype.data = function() {
@@ -132,15 +145,29 @@ define(['helper/jquery', 'tinyMCE', 'widget/list'], function($, tinyMCE, List) {
     PublicationForm.prototype._initMemberWidgets = function() {
         var studentList = new List();
         studentList.title('Students');
-        for (var i = 0; i < 8; i++) {
-            studentList.add(new List.Item('Student' + i, {}));
-        }
 
         var groupList = new List();
         groupList.title('Groups');
-        for (i = 0; i < 15; i++) {
-            groupList.add(new List.Item('Group' + i, {}));
-        }
+
+        var self = this;
+
+        // Loading groups
+        groupService.groups(function(groups) {
+            groups.forEach(function(group) {
+                var item = new List.Item(group.name, group);
+                groupList.add(item);
+            });
+
+            // Loading students
+            userService.students(function(users) {
+                users.forEach(function(user) {
+                    var item = new List.Item(user.userID, user);
+                    studentList.add(item);
+                });
+
+                self.onDataLoad();
+            });
+        });
 
         var memberList = new List();
         memberList.title('Result');
