@@ -2,18 +2,21 @@ define([
     'helper/jquery',
     'widget/publication_form',
     'widget/list',
-    'service/group_service'
+    'service/group_service',
+    'service/user_service'
 ], function(
     $,
     PublicationForm,
     List,
-    groupService
+    groupService,
+    userService
 ) {
 
     describe('widget/publication_form', function() {
 
         beforeEach(function() {
             spyOn(groupService, 'groups');
+            spyOn(userService, 'students');
         });
 
         it('_addSection should add new section to the form', function() {
@@ -86,6 +89,13 @@ define([
                 callback([
                     { name: 'Group 1' },
                     { name: 'Group 2' }
+                ]);
+            });
+
+            userService.students.and.callFake(function(callback) {
+                callback([
+                    { userID: 'User 1' },
+                    { userID: 'User 2' }
                 ]);
             });
 
@@ -181,9 +191,73 @@ define([
                     { title: 'dummy title 2', description: 'dummy description 2' }
                 ]
             });
-
         });
 
+        it('_addError should append error to corresponding element', function() {
+            var element = $('<input>');
+            var columns = $('<div>')
+                .addClass('columns')
+                .append(element);
+
+            var form = new PublicationForm();
+            form._root = columns;
+
+            expect(columns.find('.error').length).toEqual(0);
+
+            form._addError(element, 'dummy error');
+
+            expect(columns.find('.error').length).toEqual(1);
+            expect(columns.find('.error').html()).toEqual('dummy error');
+        });
+
+        it('_addError should remove previous errors', function() {
+            var element = $('<input>');
+
+            var error1 = $('<small>').addClass('error').html('dummy error 1');
+            var error2 = $('<small>').addClass('error').html('dummy error 2');
+            var error3 = $('<small>').addClass('error').html('dummy error 3');
+
+            var columns = $('<div>')
+                .addClass('columns')
+                .append(element)
+                .append(error1)
+                .append(error2)
+                .append(error3);
+
+            var form = new PublicationForm();
+            form._root = columns;
+
+            expect(columns.find('.error').length).toEqual(3);
+            expect(columns.has(error1).length).toEqual(1);
+            expect(columns.has(error2).length).toEqual(1);
+            expect(columns.has(error3).length).toEqual(1);
+
+            form._addError(element, 'dummy error');
+
+            expect(columns.find('.error').length).toEqual(1);
+            expect(columns.has(error1).length).toEqual(0);
+            expect(columns.has(error2).length).toEqual(0);
+            expect(columns.has(error3).length).toEqual(0);
+        });
+
+        it('_nthSection should return nth section of form', function() {
+            var section1 = $('<section>').addClass('section').html('1'),
+                section2 = $('<section>').addClass('section').html('2'),
+                section3 = $('<section>').addClass('section').html('3');
+
+            var sections = $('<section>')
+                .append(section1)
+                .append(section2)
+                .append(section3);
+
+            var form = new PublicationForm();
+            spyOn(form, '_sections').and.returnValue(sections);
+
+            expect(form._nthSection(0)[0]).toEqual(section1[0]);
+            expect(form._nthSection(1)[0]).toEqual(section2[0]);
+            expect(form._nthSection(2)[0]).toEqual(section3[0]);
+            expect(form._nthSection(3)[0]).toBeUndefined();
+        });
     });
 
 });

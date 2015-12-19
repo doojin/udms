@@ -197,6 +197,17 @@ define([
         this._memberList = memberList;
     };
 
+    PublicationForm.prototype._addError = function(field, error) {
+        var fieldColumns = $(field).closest('.columns');
+        fieldColumns.find('.error').remove();
+        var htmlError = $('<small>').addClass('error').html(error);
+        fieldColumns.append(htmlError);
+    };
+
+    PublicationForm.prototype._nthSection = function(n) {
+        return this._sections().find('.section').eq(n);
+    };
+
     PublicationForm.prototype._newSectionButton = function() {
         return this._form.find('.add-section');
     };
