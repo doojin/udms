@@ -2,7 +2,8 @@ define(['helper/jquery'], function($) {
 
     var LOG_IN_URL = '/login';
     var LOG_OFF_URL = '/log-off';
-    var UPDATE_INSERT_USER = '/update-insert-user';
+    var UPDATE_INSERT_USER_URL = '/update-insert-user';
+    var STUDENT_LIST_URL = '/students';
 
     var userService = {};
 
@@ -38,7 +39,7 @@ define(['helper/jquery'], function($) {
 
     userService.upsert = function(data, callback) {
         $.ajax({
-            url: UPDATE_INSERT_USER,
+            url: UPDATE_INSERT_USER_URL,
             data: JSON.stringify(data),
             type: 'post',
             contentType: 'application/json',
@@ -47,17 +48,11 @@ define(['helper/jquery'], function($) {
     };
 
     userService.students = function(callback) {
-        callback([
-            { userID: 'User 1' },
-            { userID: 'User 2' },
-            { userID: 'User 3' },
-            { userID: 'User 4' },
-            { userID: 'User 5' },
-            { userID: 'User 6' },
-            { userID: 'User 7' },
-            { userID: 'User 8' },
-            { userID: 'User 9' }
-        ]);
+        $.ajax({
+            url: STUDENT_LIST_URL,
+            type: 'get',
+            success: callback
+        });
     };
 
     return userService;

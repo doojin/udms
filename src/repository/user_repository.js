@@ -79,4 +79,12 @@ userRepository.update = function(key, update, callback) {
     });
 };
 
+userRepository.students = function(callback) {
+    User.find({ role: Role.STUDENT })
+        .sort([['created', 'descending']])
+        .then(function(users) {
+            callback(users);
+        });
+};
+
 module.exports = userRepository;
