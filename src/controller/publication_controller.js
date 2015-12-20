@@ -2,7 +2,8 @@ var roleRequired = require('./middleware/role_required'),
     mainScript = require('./middleware/main_script'),
     Role = require('../model/role'),
     userRepository = require('../repository/user_repository'),
-    publicFormValidator = require('../validator/publication_form_validator');
+    publicFormValidator = require('../validator/publication_form_validator'),
+    publicationService = require('../service/publication_service');
 
 var NEW_PUBLICATION_URL = '/new-publication',
     STUDENT_LIST_URL = '/students',
@@ -44,6 +45,9 @@ function studentList(req, res) {
 function submitPublicationForm(req, res) {
     var data = req.body;
     publicFormValidator.serverValidation(data, function(result) {
-        res.json(result);
+        data.author = req.session.auth.ID;
+        publicationService.upsert(data, function() {
+            res.json(result);
+        });
     });
 }
