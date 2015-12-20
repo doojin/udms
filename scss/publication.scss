@@ -14,7 +14,11 @@
     $members-margin: 15px;
     .groups { margin-top: $members-margin; }
     .groups { @media #{$large} { margin-top: 0; } }
-    .members.row { margin-top: $members-margin; }
+    .members.row {
+        margin-top: $members-margin;
+
+        .error { margin-top: 0; }
+    }
 
     .submit { margin-top: 30px; }
 }

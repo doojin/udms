@@ -331,6 +331,10 @@ define([
                 .append(section2TitleColumns)
                 .append(section2DescriptionColumns);
 
+            var membersWidget = $('<ul>');
+            var membersColumns = $('<div>').addClass('columns').addClass('members')
+                .append(membersWidget);
+
             var sectionsDiv = $('<div>').addClass('sections')
                 .append(section1)
                 .append(section2);
@@ -338,7 +342,8 @@ define([
             var root = $('<div>')
                 .append(publicationNameColumns)
                 .append(publicationDescriptionColumns)
-                .append(sectionsDiv);
+                .append(sectionsDiv)
+                .append(membersColumns);
 
             var form = new PublicationForm();
             form._form = root;
@@ -349,6 +354,7 @@ define([
             expect(section1DescriptionColumns.find('.error').length).toEqual(0);
             expect(section2TitleColumns.find('.error').length).toEqual(0);
             expect(section2DescriptionColumns.find('.error').length).toEqual(0);
+            expect(membersColumns.find('.error').length).toEqual(0);
 
             var errors = {
                 name: 'error1',
@@ -356,7 +362,8 @@ define([
                 sections: [
                     { },
                     { title: 'error3', description: 'error4' }
-                ]
+                ],
+                members: 'error5'
             };
 
             form._addErrors(errors);
@@ -367,6 +374,7 @@ define([
             expect(section1DescriptionColumns.find('.error').length).toEqual(0);
             expect(section2TitleColumns.find('.error').length).toEqual(1);
             expect(section2DescriptionColumns.find('.error').length).toEqual(1);
+            expect(membersColumns.find('.error').length).toEqual(1);
         });
     });
 

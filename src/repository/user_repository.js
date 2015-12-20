@@ -87,4 +87,14 @@ userRepository.students = function(callback) {
         });
 };
 
+userRepository.existAll = function(IDs, callback) {
+    User.find({ _id: {
+        $in: IDs
+    }}).then(function(users) {
+        callback(users.length === IDs.length);
+    }, function() {
+        callback(false);
+    });
+};
+
 module.exports = userRepository;

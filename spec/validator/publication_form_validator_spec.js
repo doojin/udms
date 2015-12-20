@@ -1,4 +1,5 @@
-var validator = require('../../src/validator/publication_form_validator');
+var validator = require('../../src/validator/publication_form_validator'),
+    userRepository = require('../../src/repository/user_repository');
 
 describe('publication_form_validator', function() {
 
@@ -198,5 +199,47 @@ describe('publication_form_validator', function() {
         validator._setSuccessFlag(result);
 
         expect(result.success).toBeTruthy();
+    });
+
+    it('_setSuccessFlag should set flag to false if members widget has error', function() {
+        var result = { members: 'error' };
+
+        validator._setSuccessFlag(result);
+
+        expect(result.success).toBeFalsy();
+    });
+
+    it('_validateStudents should add error if at least one of student IDs doesn\'t exist', function() {
+        spyOn(userRepository, 'existAll').and.callFake(function(ids, callback) {
+            callback(false);
+        });
+        var result = {};
+        var data = {
+            members: [
+                { type: 'student', value: { ID: 'dummy id' } }
+            ]
+        };
+        var callback = jasmine.createSpy('callback');
+
+        validator._validateStudents(data, result, callback);
+
+        expect(result.members).toEqual('One or more students do not exist in database anymore');
+    });
+
+    it('_validateStudents should not add error if all students exist in database', function() {
+        spyOn(userRepository, 'existAll').and.callFake(function(ids, callback) {
+            callback(true);
+        });
+        var result = {};
+        var data = {
+            members: [
+                { type: 'student', value: { ID: 'dummy id' } }
+            ]
+        };
+        var callback = jasmine.createSpy('callback');
+
+        validator._validateStudents(data, result, callback);
+
+        expect(result.members).toBeUndefined();
     });
 });

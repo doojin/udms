@@ -5,7 +5,8 @@
 
     var ERR_FIELD_REQUIRED = 'This field is required',
         ERR_FIELD_LENGTH = 'The value of this field must be {min}..{max} symbols',
-        ERR_FIELD_MAXLENGTH = 'The value of this field should be not longer than {max} symbols';
+        ERR_FIELD_MAXLENGTH = 'The value of this field should be not longer than {max} symbols',
+        ERR_MEMBERS_WRONG_STUDENTS = 'One or more students do not exist in database anymore';
 
     var validator = {};
 
@@ -83,12 +84,50 @@
             if (section.description) result.success = false;
         });
 
+        if (result.members) result.success = false;
     };
 
     if (nodeModule) {
         validator.serverValidation = function(data, callback) {
             var result = this.baseValidation(data);
-            callback(result);
+
+            !result.success && callback(result);
+
+            var self = this;
+            var async = require('async');
+            async.waterfall([
+                function(callback) {
+                    self._validateStudents(data, result, callback);
+                },
+                function(callback) {
+                    self._validateGroups(data, result, callback);
+                }
+            ], function() {
+                self._setSuccessFlag(result);
+                callback(result);
+            });
+        };
+
+        validator._validateStudents = function(data, result, callback) {
+            var userRepository = require('../repository/user_repository');
+            var students = data.members.filter(function(member) {
+                return member.type === 'student';
+            });
+
+            var IDs = [];
+            students.forEach(function(student) {
+                IDs.push(student.value.ID);
+            });
+
+            var self = this;
+            userRepository.existAll(IDs, function(exist) {
+                if (!exist) self._addError('members', result, ERR_MEMBERS_WRONG_STUDENTS);
+                callback();
+            });
+        };
+
+        validator._validateGroups = function(data, result, callback) {
+            callback();
         };
 
         module.exports = validator;

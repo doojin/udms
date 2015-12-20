@@ -223,6 +223,7 @@ define([
             section.title && self._addError(self._sectionTitle(self._nthSection(index)), section.title);
             section.description && self._addError(self._sectionDescription(self._nthSection(index)), section.description);
         });
+        validationResult.members && self._addError(self._membersWidget(), validationResult.members);
     };
 
     PublicationForm.prototype._removeErrors = function() {
@@ -276,6 +277,11 @@ define([
     PublicationForm.prototype._submitButton = function() {
         return this._form.find('.submit');
     };
+
+    PublicationForm.prototype._membersWidget = function() {
+        return this._membersDiv().find('ul');
+    };
+
     return PublicationForm;
 
 });
