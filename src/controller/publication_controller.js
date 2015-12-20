@@ -1,10 +1,12 @@
 var roleRequired = require('./middleware/role_required'),
     mainScript = require('./middleware/main_script'),
     Role = require('../model/role'),
-    userRepository = require('../repository/user_repository');
+    userRepository = require('../repository/user_repository'),
+    publicFormValidator = require('../validator/publication_form_validator');
 
-var NEW_PUBLICATION_URL = '/new-publication';
-var STUDENT_LIST_URL = '/students';
+var NEW_PUBLICATION_URL = '/new-publication',
+    STUDENT_LIST_URL = '/students',
+    SUBMIT_FORM_URL = '/submit-publication';
 
 module.exports = {
     apply: function(app) {
@@ -19,7 +21,13 @@ module.exports = {
             STUDENT_LIST_URL,
             roleRequired(Role.PROFESSOR),
             studentList
-        )
+        );
+
+        app.post(
+            SUBMIT_FORM_URL,
+            roleRequired(Role.PROFESSOR),
+            submitPublicationForm
+        );
     }
 };
 
@@ -30,5 +38,12 @@ function getNewPublication(req, res) {
 function studentList(req, res) {
     userRepository.students(function(students) {
         res.json(students);
+    });
+}
+
+function submitPublicationForm(req, res) {
+    var data = req.body;
+    publicFormValidator.serverValidation(data, function(result) {
+        res.json(result);
     });
 }

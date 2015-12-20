@@ -3,13 +3,15 @@ define([
     'widget/publication_form',
     'widget/list',
     'service/group_service',
-    'service/user_service'
+    'service/user_service',
+    'service/publication_service'
 ], function(
     $,
     PublicationForm,
     List,
     groupService,
-    userService
+    userService,
+    publicationService
 ) {
 
     describe('widget/publication_form', function() {
@@ -200,7 +202,6 @@ define([
                 .append(element);
 
             var form = new PublicationForm();
-            form._root = columns;
 
             expect(columns.find('.error').length).toEqual(0);
 
@@ -225,7 +226,6 @@ define([
                 .append(error3);
 
             var form = new PublicationForm();
-            form._root = columns;
 
             expect(columns.find('.error').length).toEqual(3);
             expect(columns.has(error1).length).toEqual(1);
@@ -257,6 +257,116 @@ define([
             expect(form._nthSection(1)[0]).toEqual(section2[0]);
             expect(form._nthSection(2)[0]).toEqual(section3[0]);
             expect(form._nthSection(3)[0]).toBeUndefined();
+        });
+
+        it('_removeErrors should remove all errors from the form', function() {
+            var error1 = $('<small>').addClass('error');
+            var error2 = $('<small>').addClass('error');
+            var error3 = $('<small>').addClass('error');
+            var root = $('<div>')
+                .append(error1)
+                .append(error2)
+                .append(error3);
+            var form = new PublicationForm();
+            form._form = root;
+
+            expect(form._form.find('.error').length).toEqual(3);
+
+            form._removeErrors();
+
+            expect(form._form.find('.error').length).toEqual(0);
+        });
+
+        it('form submssion should add errors if validation not passed', function() {
+            spyOn(publicationService, 'validate').and.callFake(function(data, callback) {
+                callback({ success: false });
+            });
+            var form = new PublicationForm();
+            spyOn(form, '_addErrors');
+
+            expect(form._addErrors).not.toHaveBeenCalled();
+
+            form.onSubmit();
+
+            expect(form._addErrors).toHaveBeenCalled();
+        });
+
+        it('form submssion should not add errors if validation is passed', function() {
+            spyOn(publicationService, 'validate').and.callFake(function(data, callback) {
+                callback({ success: true });
+            });
+            var form = new PublicationForm();
+            spyOn(form, '_addErrors');
+
+            form.onSubmit();
+
+            expect(form._addErrors).not.toHaveBeenCalled();
+        });
+
+        it('_addErrors should add errors to corresponding fields', function() {
+            var publicationNameInput = $('<input>').addClass('publication-name');
+            var publicationNameColumns = $('<div>').addClass('columns')
+                .append(publicationNameInput);
+            var publicationDescriptionTextarea = $('<textarea>').addClass('publication-description');
+            var publicationDescriptionColumns = $('<div>').addClass('columns')
+                .append(publicationDescriptionTextarea);
+
+            var section1TitleInput = $('<input>').addClass('title');
+            var section1TitleColumns = $('<div>').addClass('columns')
+                .append(section1TitleInput);
+            var section1DescriptionTextarea = $('<textarea>').addClass('description');
+            var section1DescriptionColumns = $('<div>').addClass('columns')
+                .append(section1DescriptionTextarea);
+            var section1 = $('<section>').addClass('section')
+                .append(section1TitleColumns)
+                .append(section1DescriptionColumns);
+
+            var section2TitleInput = $('<input>').addClass('title');
+            var section2TitleColumns = $('<div>').addClass('columns')
+                .append(section2TitleInput);
+            var section2DescriptionTextarea = $('<textarea>').addClass('description');
+            var section2DescriptionColumns = $('<div>').addClass('columns')
+                .append(section2DescriptionTextarea);
+            var section2 = $('<section>').addClass('section')
+                .append(section2TitleColumns)
+                .append(section2DescriptionColumns);
+
+            var sectionsDiv = $('<div>').addClass('sections')
+                .append(section1)
+                .append(section2);
+
+            var root = $('<div>')
+                .append(publicationNameColumns)
+                .append(publicationDescriptionColumns)
+                .append(sectionsDiv);
+
+            var form = new PublicationForm();
+            form._form = root;
+
+            expect(publicationNameColumns.find('.error').length).toEqual(0);
+            expect(publicationDescriptionColumns.find('.error').length).toEqual(0);
+            expect(section1TitleColumns.find('.error').length).toEqual(0);
+            expect(section1DescriptionColumns.find('.error').length).toEqual(0);
+            expect(section2TitleColumns.find('.error').length).toEqual(0);
+            expect(section2DescriptionColumns.find('.error').length).toEqual(0);
+
+            var errors = {
+                name: 'error1',
+                description: 'error2',
+                sections: [
+                    { },
+                    { title: 'error3', description: 'error4' }
+                ]
+            };
+
+            form._addErrors(errors);
+
+            expect(publicationNameColumns.find('.error').length).toEqual(1);
+            expect(publicationDescriptionColumns.find('.error').length).toEqual(1);
+            expect(section1TitleColumns.find('.error').length).toEqual(0);
+            expect(section1DescriptionColumns.find('.error').length).toEqual(0);
+            expect(section2TitleColumns.find('.error').length).toEqual(1);
+            expect(section2DescriptionColumns.find('.error').length).toEqual(1);
         });
     });
 

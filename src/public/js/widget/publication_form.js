@@ -3,13 +3,15 @@ define([
     'tinyMCE',
     'widget/list',
     'service/group_service',
-    'service/user_service'
+    'service/user_service',
+    'service/publication_service'
 ], function(
     $,
     tinyMCE,
     List,
     groupService,
-    userService
+    userService,
+    publicationService
 ) {
 
     var REMOVE_SECTION_BUTTON_TEXT = 'Remove this section';
@@ -17,7 +19,16 @@ define([
     var newTextAreasCount = 0;
 
     function PublicationForm(selector) {
-        this.onSubmit = function() {};
+        var self = this;
+
+        this.onSubmit = function() {
+            self._removeErrors();
+            var data = self.data();
+            publicationService.validate(data, function(result) {
+                if (!result.success) self._addErrors(result);
+            });
+        };
+
         this.onDataLoad = function() {};
 
         this._form = $(selector);
@@ -202,6 +213,20 @@ define([
         fieldColumns.find('.error').remove();
         var htmlError = $('<small>').addClass('error').html(error);
         fieldColumns.append(htmlError);
+    };
+
+    PublicationForm.prototype._addErrors = function(validationResult) {
+        validationResult.name && this._addError(this._publicationName(), validationResult.name);
+        validationResult.description && this._addError(this._publicationDescription(), validationResult.description);
+        var self = this;
+        validationResult.sections && validationResult.sections.forEach(function(section, index) {
+            section.title && self._addError(self._sectionTitle(self._nthSection(index)), section.title);
+            section.description && self._addError(self._sectionDescription(self._nthSection(index)), section.description);
+        });
+    };
+
+    PublicationForm.prototype._removeErrors = function() {
+        this._form.find('small.error').remove();
     };
 
     PublicationForm.prototype._nthSection = function(n) {
