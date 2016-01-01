@@ -5,14 +5,14 @@ var roleRequired = require('./middleware/role_required'),
     publicFormValidator = require('../validator/publication_form_validator'),
     publicationService = require('../service/publication_service');
 
-var NEW_PUBLICATION_URL = '/new-publication',
+var PUBLICATION_URL = '/publication',
     STUDENT_LIST_URL = '/students',
     SUBMIT_FORM_URL = '/submit-publication';
 
 module.exports = {
     apply: function(app) {
         app.get(
-            NEW_PUBLICATION_URL,
+            PUBLICATION_URL,
             roleRequired(Role.PROFESSOR),
             mainScript('create-update-publication'),
             getNewPublication
