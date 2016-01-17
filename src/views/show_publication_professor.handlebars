@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="small-12 columns">
+
+        {{#if uploads}}
+            {{#each uploads}}
+                <a class="small button" style="width: 100%;" href="/up/{{_id}}">
+                    {{uploader.userID}} - {{created}}
+                </a>
+            {{/each}}
+        {{else}}
+            <div class="text-center">There were no uploads</div>
+        {{/if}}
+
+    </div>
+</div>

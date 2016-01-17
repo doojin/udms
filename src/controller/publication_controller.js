@@ -134,8 +134,12 @@ function showPublication(req, res) {
     });
 }
 
-function showPublicationProfessor(req, res) {
-    res.render('show_publication_professor');
+function showPublicationProfessor(req, res, publication) {
+    Upload.find({ 'publication': publication._id }, {}, { sort: { 'created' : -1 } })
+        .populate('uploader')
+        .exec(function(err, uploads) {
+            res.render('show_publication_professor', { uploads: uploads });
+        });
 }
 
 function showPublicationStudent(req, res, publication) {
