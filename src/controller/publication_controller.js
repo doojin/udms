@@ -3,7 +3,9 @@ var roleRequired = require('./middleware/role_required'),
     Role = require('../model/role'),
     userRepository = require('../repository/user_repository'),
     publicFormValidator = require('../validator/publication_form_validator'),
-    publicationService = require('../service/publication_service');
+    publicationService = require('../service/publication_service'),
+    Publication = require('../repository/entity/publication'),
+    User = require('../repository/entity/user');
 
 var PUBLICATION_URL = '/publication',
     STUDENT_LIST_URL = '/students',
@@ -29,6 +31,12 @@ module.exports = {
             roleRequired(Role.PROFESSOR),
             submitPublicationForm
         );
+
+        app.get(
+            '/publications',
+            roleRequired(Role.AUTHORIZED),
+            publications
+        );
     }
 };
 
@@ -47,7 +55,6 @@ function submitPublicationForm(req, res) {
     publicFormValidator.serverValidation(data, function(result) {
         try {
             data.author = req.session.auth.ID;
-            console.log(result);
             if (result.success) {
                 publicationService.upsert(data, function () {
                     return res.json(result);
@@ -58,5 +65,28 @@ function submitPublicationForm(req, res) {
         } catch(e) {
 
         }
+    });
+}
+
+function publications(req, res) {
+    var myPublications = [];
+    Publication.find({}).then(function(publications) {
+        User.findOne({'_id': req.session.auth.ID}, function(err, me) {
+            publications.forEach(function(publication) {
+                var pushed = false;
+                if (!pushed && publication.author == req.session.auth.ID) {
+                    myPublications.push(publication);
+                    pushed = true;
+                }
+                if (!pushed && publication.students.indexOf(req.session.auth.ID) > -1) {
+                    myPublications.push(publication);
+                    pushed = true;
+                }
+                if (!pushed && publication.groups.indexOf(me.group) > -1) {
+                    myPublications.push(publication);
+                }
+            });
+            res.render('publications', { publications: myPublications, me: me });
+        });
     });
 }
