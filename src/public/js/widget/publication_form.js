@@ -25,7 +25,7 @@ define([
             self._removeErrors();
             var data = self.data();
             publicationService.validate(data, function(result) {
-                if (!result.success) self._addErrors(result)
+                if (!result.success) self._addErrors(result);
                 else window.location = '/publications';
             });
         };
@@ -39,7 +39,9 @@ define([
     }
 
     PublicationForm.prototype.data = function() {
-        tinyMCE.triggerSave();
+        try {
+            tinyMCE.triggerSave();
+        } catch (e) {}
 
         var data = {
             name: this._publicationName().val(),
