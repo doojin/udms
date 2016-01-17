@@ -23,7 +23,8 @@
     "express": "^4.13.3",
     "express-handlebars": "^2.0.1",
     "express-session": "^1.12.1",
-    "mongoose": "^4.2.9"
+    "mongoose": "^4.2.9",
+    "multer": "^1.1.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
