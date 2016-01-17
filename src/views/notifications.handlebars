@@ -1,1 +1,16 @@
-notifications
+<div class="row">
+    <div class="small-12 columns">
+        {{#each comments}}
+            <div class="panel">
+                <div class="row">
+                    <div class="small-10 columns">
+                        {{text}}
+                    </div>
+                    <div class="small-2 columns text-right">
+                        <a href="/pub/{{publication}}" class="tiny button">Publication</a>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>

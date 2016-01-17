@@ -6,6 +6,10 @@ module.exports = {
 
 };
 
+var Comment = require('../repository/entity/comment');
+
 function getNotifications(req, res) {
-    res.render('notifications');
+    Comment.find({ $or: [{sender: req.session.auth.ID}, {receiver: req.session.auth.ID}] }, function(err, comments) {
+        res.render('notifications', {comments: comments});
+    });
 }
