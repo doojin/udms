@@ -1,19 +1,13 @@
-var bcrypt = require('bcrypt');
-
 var PASSWORD_LENGTH = 6;
 
 var service = {};
 
 service.encodePassword = function(password, callback) {
-    bcrypt.hash(password, 10, function(err, result) {
-        callback(result);
-    });
+    callback(password);
 };
 
 service.comparePasswords = function(password, encodedPassword, callback) {
-    bcrypt.compare(password, encodedPassword, function(err, result) {
-        callback(result);
-    });
+    callback(password === encodedPassword);
 };
 
 service.generatePassword = function() {

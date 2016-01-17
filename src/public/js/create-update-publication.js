@@ -2,12 +2,14 @@ define([
     'helper/jquery',
     'common_logic',
     'service/content_service',
-    'widget/publication_form'
+    'widget/publication_form',
+    'service/publication_service'
 ], function(
     $,
     commonLogic,
     contentService,
-    PublicationForm
+    PublicationForm,
+    publicationService
 ) {
 
     var publicationForm = new PublicationForm('.publication');

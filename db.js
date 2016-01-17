@@ -12,7 +12,7 @@ deleteUsers();
 function deleteUsers() {
     User.remove({})
         .then(function() {
-            addDummyUsers();
+            //addDummyUsers();
             addBaseUsers();
         });
 }

@@ -45,9 +45,18 @@ function studentList(req, res) {
 function submitPublicationForm(req, res) {
     var data = req.body;
     publicFormValidator.serverValidation(data, function(result) {
-        data.author = req.session.auth.ID;
-        publicationService.upsert(data, function() {
-            res.json(result);
-        });
+        try {
+            data.author = req.session.auth.ID;
+            console.log(result);
+            if (result.success) {
+                publicationService.upsert(data, function () {
+                    return res.json(result);
+                });
+            } else {
+                return res.json(result);
+            }
+        } catch(e) {
+
+        }
     });
 }
