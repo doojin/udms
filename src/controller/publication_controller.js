@@ -9,7 +9,8 @@ var roleRequired = require('./middleware/role_required'),
     roleService = require('../service/role_service'),
     multer = require('multer'),
     Upload = require('../repository/entity/upload'),
-    fs = require('fs');
+    fs = require('fs'),
+    Comment = require('../repository/entity/comment');
 
 var PUBLICATION_URL = '/publication',
     STUDENT_LIST_URL = '/students',
@@ -69,6 +70,18 @@ module.exports = {
                 {name: 'f10'}
             ]),
             upload
+        );
+
+        app.get(
+            '/up/:uploadId',
+            roleRequired(Role.AUTHORIZED),
+            showUpload
+        );
+
+        app.post(
+            '/up/:uploadId',
+            roleRequired(Role.AUTHORIZED),
+            comment
         );
     }
 };
@@ -144,7 +157,9 @@ function showPublicationProfessor(req, res, publication) {
 
 function showPublicationStudent(req, res, publication) {
     Upload.findOne({ 'publication': publication._id }, {}, { sort: { 'created' : -1 } }, function(err, upload) {
-        res.render('show_publication_student', { publication: publication, upload: upload });
+        Comment.find({ publication: publication._id}, function(err, comments) {
+            res.render('show_publication_student', { publication: publication, upload: upload, comments: comments });
+        });
     });
 }
 
@@ -162,4 +177,30 @@ function upload(req, res) {
     });
     upload.save();
     res.render('submitted');
+}
+
+function showUpload(req, res) {
+    Upload.findOne({ '_id': req.param('uploadId') }, function(err, upload) {
+        if (err || upload === null) return res.redirect('/publications');
+        Comment.find({ publication: upload.publication}, function(err, comments) {
+            res.render('show_upload', { upload: upload, comments: comments });
+        });
+    });
+}
+
+function comment(req, res) {
+    Upload.findOne({ '_id': req.param('uploadId') })
+        .populate('uploader')
+        .exec(function(err, upload) {
+            if (err || upload === null) return res.redirect('/publications');
+            var comment = new Comment({
+                sender: req.session.auth.ID,
+                receiver: upload.uploader.ID,
+                publication: upload.publication,
+                text: req.body.text
+            });
+            comment.save(function() {
+                showUpload(req, res);
+            });
+        });
 }

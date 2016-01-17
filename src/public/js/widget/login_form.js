@@ -28,7 +28,7 @@ define([
     LoginForm.prototype.submit = function() {
         var self = this;
         this._validate(function(success) {
-            if (success) self._reloadWindow();
+            if (success) setTimeout(self._reloadWindow, 500);
         });
     };
 

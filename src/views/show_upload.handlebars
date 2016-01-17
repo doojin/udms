@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="small-12 columns">
+        <form method="POST">
+            <div class="row">
+                <div class="small-10 text-right columns">
+                    <input style="width:92%; float: right;" name="text" type="text" placeholder="Add a Comment">
+                </div>
+                <div class="small-2 columns">
+                    <input type="submit" class="tiny button" value="submit">
+                </div>
+            </div>
+        </form>
+        {{#if comments}}
+            {{#each comments}}
+                <div class="panel">
+                    {{text}}
+                </div>
+            {{/each}}
+        {{/if}}
+        {{#each upload.files}}
+            <iframe style="margin: 0 auto; width: 1000px; height: 600px;" src="http://docs.google.com/gview?url=https://www.dropbox.com/s/zwh17qw2zgv5i3s/f430c16e101473a4c646fa4fd1913b6f.doc?raw=1&embedded=true" style="width:600px; height:500px;" frameborder="0"></iframe>
+        {{/each}}
+    </div>
+</div>

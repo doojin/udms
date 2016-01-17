@@ -15,6 +15,7 @@
         <br><br>
         <form method="POST" action="/upload" enctype="multipart/form-data">
             <input type="hidden" name="pubId" value="{{publication._id}}">
+            <div class="panel">
             {{#each publication.sections}}
                 <div class="row">
                     <div class="small-4 text-right columns">
@@ -46,6 +47,7 @@
                 </div>
                 <br><br>
             {{/each}}
+                </div>
         <div class="row">
             <div class="small-12 columns text-center">
                 <input type="submit" class="tiny button" value="submit">
@@ -61,6 +63,14 @@
                     {{/each}}
                 </div>
             </div>
+        {{/if}}
+
+        {{#if comments}}
+            {{#each comments}}
+                <div class="panel">
+                    {{text}}
+                </div>
+            {{/each}}
         {{/if}}
     </div>
 </div>
